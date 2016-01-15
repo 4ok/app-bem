@@ -1,0 +1,19 @@
+{
+  "author": "4ok",
+  "name": "app-bem",
+  "version": "0.0.0",
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "dependencies": {
+    "q": "^1.4.1",
+    "config": "^1.16.0",
+    "logger": "git+https://github.com/4ok/logger.git",
+    "break-promise": "git+https://github.com/4ok/break-promise.git",
+    "bem-components": "git+https://github.com/4ok/bem-components.git",
+    "controller-abstract": "git+https://github.com/4ok/controller-abstract.git",
+    "app-core": "git+https://github.com/4ok/app-core.git",
+    "markdown-bemjson": "git+https://github.com/4ok/markdown-bemjson.git"
+  },
+  "private": true
+}
