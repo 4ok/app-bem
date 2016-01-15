@@ -13,7 +13,7 @@
     "bem-components": "git+https://github.com/4ok/bem-components.git",
     "controller-abstract": "git+https://github.com/4ok/controller-abstract.git",
     "app-core": "git+https://github.com/4ok/app-core.git",
-    "markdown-bemjson": "git+https://github.com/4ok/markdown-bemjson.git"
+    "markdown-bemjson": "git+https://github.com/bem-incubator/markdown-bemjson.git"
   },
   "private": true
 }
