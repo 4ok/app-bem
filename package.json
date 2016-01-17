@@ -16,7 +16,7 @@
     "markdown-bemjson": "git+https://github.com/bem-incubator/markdown-bemjson.git",
     "vow": "^0.4.11",
     "enb": "^1.0.1",
-    "borschik": "^1.5.0"
+    "borschik": "^1.5.1"
   },
   "private": true
 }
