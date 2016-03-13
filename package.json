@@ -6,7 +6,7 @@
     "node": ">=4.0.0"
   },
   "dependencies": {
-    "app-gate": "git+https://github.com/4ok/app-git.git",
+    "app-gate": "git+https://github.com/4ok/app-gate.git",
     "app-core": "git+https://github.com/4ok/app-core.git",
     "borschik": "^1.5.1",
     "break-promise": "git+https://github.com/4ok/break-promise.git",
