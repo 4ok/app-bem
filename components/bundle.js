@@ -1,20 +1,16 @@
 'use strict';
 
-var fs       = require('fs');
-var vm       = require('vm');
-var vow      = require('vow');
-var enb      = require('enb');
-var borschik = require('borschik/js/borschik.js');
+const fs  = require('fs');
+const vm  = require('vm');
+const vow = require('vow');
+const enb = require('enb');
 
 class Bundle {
 
     constructor(options) {
         this._bemtreeContext = {
-            console  : console,
-            require  : require,
-            Vow      : vow,
-            borschik : borschik,
-            $        : {}
+            console : console, // TODO: if dev
+            Vow     : vow
         };
 
         if (undefined !== options.root) {
@@ -23,22 +19,22 @@ class Bundle {
                 throw new Error('Root dir "' + options.root + '" is not exists');
             }
 
-            var level = 'bundles';
+            let level = 'bundles';
 
             if (options.level) {
                 level = options.level + '.' + level;
             }
 
             if (undefined !== options.bundle) {
-                var pathProlog = [
+                const pathProlog = [
                     options.root,
                     level,
                     options.bundle,
                     options.bundle
                 ].join('/');
 
-                this._bemhtmlPath = pathProlog + '.bemhtml.final.js';
-                this._bemtreePath = pathProlog + '.bemtree.final.js';
+                this._bemhtmlPath = pathProlog + '.bemhtml.final.js'; // TODO
+                this._bemtreePath = pathProlog + '.bemtree.final.js'; // TODO
             }
         }
 
@@ -48,7 +44,7 @@ class Bundle {
     }
 
     static make() {
-        var bundle = new Bundle({
+        const bundle = new Bundle({
             root : config.rootPath + '/bem' // TODO
         });
 
@@ -68,22 +64,20 @@ class Bundle {
     }
 
     applyData(data, output) {
-        var self = this;
 
         return this
             .getBemtree()
             .apply(data)
-            .then(function (bemjson) {
-                var content;
+            .then((bemjson) => {
+                let content;
 
                 switch (output) {
-                    case 'bemjson': {
+                    case 'bemjson' : {
                         content = '<pre>' + JSON.stringify(bemjson, null, 4) + '</pre>';
                         break;
                     }
-                    case 'html':
                     default: {
-                        content = self.getBemhtml().apply(bemjson);
+                        content = this.getBemhtml().apply(bemjson);
                     }
                 }
 
@@ -93,7 +87,7 @@ class Bundle {
 
     addBemtreeContext(context) {
 
-        for (var key in context) {
+        for (let key in context) {
             this._bemtreeContext[key] = context[key];
         }
     }
@@ -101,8 +95,8 @@ class Bundle {
     getBemtree() {
 
         if (!this._bemtree) {
-            var content = fs.readFileSync(this._bemtreePath, 'utf-8');
-            var context = this._bemtreeContext;
+            const content = fs.readFileSync(this._bemtreePath, 'utf-8');
+            const context = this._bemtreeContext;
 
             vm.runInNewContext(content, context);
 

@@ -6,17 +6,19 @@
     "node": ">=4.0.0"
   },
   "dependencies": {
-    "q": "^1.4.1",
-    "config": "^1.16.0",
-    "logger": "git+https://github.com/4ok/logger.git",
-    "break-promise": "git+https://github.com/4ok/break-promise.git",
-    "controller-abstract": "git+https://github.com/4ok/controller-abstract.git",
+    "app-gate": "git+https://github.com/4ok/app-git.git",
     "app-core": "git+https://github.com/4ok/app-core.git",
-    "app-api": "git+https://github.com/4ok/app-api.git",
-    "markdown-bemjson": "git+https://github.com/bem-incubator/markdown-bemjson.git",
-    "vow": "^0.4.11",
+    "borschik": "^1.5.1",
+    "break-promise": "git+https://github.com/4ok/break-promise.git",
+    "config": "^1.16.0",
+    "controller-abstract": "git+https://github.com/4ok/controller-abstract.git",
     "enb": "^1.0.1",
-    "borschik": "^1.5.1"
+    "logger": "git+https://github.com/4ok/logger.git",
+    "markdown-bemjson": "git+https://github.com/bem-incubator/markdown-bemjson.git",
+    "q": "^1.4.1",
+    "qs": "^6.0.2",
+    "underscore.string": "^3.3.4",
+    "vow": "^0.4.11"
   },
   "private": true
 }
