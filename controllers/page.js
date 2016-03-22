@@ -1,13 +1,15 @@
 'use strict';
 
 const fs            = require('fs');
+const q             = require('q');
 const logger        = require('logger')();
 const BreakPromise  = require('break-promise');
 const config        = require('config');
 const Bundle        = require('../components/bundle');
 const Gate          = require('app-gate');
 const HelperFactory = require('app-core/components/helper/factory');
-const Controller    = require('controller-abstract');
+const MethodContext = require('app-core/components/method-context');
+const Controller    = require('controller-abstract'); // TODO
 
 const LOGGER_PROFILE_SEND_RESPONSE = 'Send response';
 
@@ -27,7 +29,7 @@ module.exports = class extends Controller {
         logger.profile(LOGGER_PROFILE_SEND_RESPONSE);
 
         // TODO
-        if (this._params.route('article_alias_chain')) {
+        if (this._param.route('article_alias_chain')) {
             this._aaa()
                 .then(this._findPage.bind(this))
                 .then(this._showPage.bind(this))
@@ -42,7 +44,7 @@ module.exports = class extends Controller {
     }
 
     _aaa() { // TODO
-        const articleAliasChain  = this._params.route('article_alias_chain');
+        const articleAliasChain  = this._param.route('article_alias_chain');
 
         return this._gate
             .callMethod('base:article', {
@@ -52,7 +54,7 @@ module.exports = class extends Controller {
                     }
                 }
             })
-            .then(page => this._request.setParam('article_id', page._id));
+            .then(page => this._request.setParam('route.params.article_id', page._id));
     }
 
     _findPage() {
@@ -60,7 +62,7 @@ module.exports = class extends Controller {
         return this._gate
             .callMethod('base:page', {
                 filter: {
-                    alias : this._params.route('page_alias')
+                    alias : this._param.route('page_alias')
                 }
             })
             .then(page => {
@@ -76,30 +78,65 @@ module.exports = class extends Controller {
     }
 
     _showPage(page) {
+        let context = page.context || {
+            block : 'page'
+        };
+        Object.assign(context, {
+            content : page.content,
+            seo     : page.seo
+        });
 
-        return this._bundleApplyData('index', { // TODO index
+        return this._render('index', { // TODO index
             block   : 'index',
-            helper  : this._helperFactory.getHelper.bind(this._helperFactory),
-            context : {
-                block : 'page', // TODO
-                //mods  : {
-                //    sidebar : true
-                //},
-                content : page.content,
-                seo     : page.seo
-            }
+            bemtree : {
+                helper : this._helperFactory.getHelper.bind(this._helperFactory),
+                data   : {}
+            },
+            context : context
         });
     }
 
-    _bundleApplyData(bundleName, bundleData) { // TODO
-        const output = this._params.query('__output', 'html');
+    _render(bundleName, bundleData) { // TODO
         const bundle = new Bundle({
             root   : config.rootPath + '/bem', // TODO
             bundle : bundleName
         });
+        const context     = new MethodContext(this._param)
+        let methods = bundle.getGateMethod().call(context);
 
-        return bundle
-            .applyData(bundleData, output)
+        methods = Object
+            .keys(methods)
+            .reduce((result, block) => {
+                let params = methods[block];
+
+                if (typeof params == 'function') {
+                    params = params();
+                }
+
+                if (params && Object.keys(params).length > 0) {
+                    result[block] = params;
+                }
+
+                return result;
+            }, {});
+
+        const blocks   = Object.keys(methods);
+        const promises = blocks.map(block => {
+            return this._gate.callMethod(methods[block]);
+        });
+
+        return q
+            .all(promises)
+            .then(data => {
+
+                blocks.forEach((block, index) => {
+                    bundleData.bemtree.data[block] = data[index];
+                });
+
+                const output = this._param.query('__output', 'html');
+
+                return bundle.applyData(bundleData, output);
+            })
             .then(this._sendHtmlResponse.bind(this));
     }
 

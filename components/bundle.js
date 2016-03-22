@@ -10,7 +10,8 @@ class Bundle {
     constructor(options) {
         this._bemtreeContext = {
             console : console, // TODO: if dev
-            Vow     : vow
+            Vow     : vow,
+            require : require // TODO
         };
 
         if (undefined !== options.root) {
@@ -33,8 +34,9 @@ class Bundle {
                     options.bundle
                 ].join('/');
 
-                this._bemhtmlPath = pathProlog + '.bemhtml.final.js'; // TODO
-                this._bemtreePath = pathProlog + '.bemtree.final.js'; // TODO
+                this._bemhtmlPath    = pathProlog + '.bemhtml.final.js'; // TODO
+                this._bemtreePath    = pathProlog + '.bemtree.final.js'; // TODO
+                this._gateMethodPath = pathProlog + '.gate.final.js'; // TODO
             }
         }
 
@@ -68,16 +70,23 @@ class Bundle {
         return this
             .getBemtree()
             .apply(data)
-            .then((bemjson) => {
+            .then(bemjson => {
                 let content;
 
                 switch (output) {
                     case 'bemjson' : {
-                        content = '<pre>' + JSON.stringify(bemjson, null, 4) + '</pre>';
+                        content = [
+                            '<pre>',
+                            JSON.stringify(bemjson, null, 4),
+                            '</pre>'
+                        ].join('\n');
+
                         break;
                     }
                     default: {
-                        content = this.getBemhtml().apply(bemjson);
+                        content = this
+                            .getBemhtml()
+                            .apply(bemjson);
                     }
                 }
 
@@ -113,6 +122,15 @@ class Bundle {
         }
 
         return this._bemhtml;
+    }
+
+    getGateMethod() {
+
+        if (!this._gateMethod) {
+            this._gateMethod = require(this._gateMethodPath);
+        }
+
+        return this._gateMethod;
     }
 }
 

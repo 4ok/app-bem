@@ -12,12 +12,22 @@ const enbPostcss     = require('enb-bundle-postcss/techs/enb-bundle-postcss');
 const enbBrowserJs   = require('enb-js/techs/browser-js');
 const enbBemtree     = require('enb-bemxjst/techs/bemtree');
 const enbBemhtml     = require('enb-bemxjst/techs/bemhtml');
+const enbGateMethod  = require('app-bem/components/enb/techs/gate-method');
 
 // Postcss plugins
 const postcssSimpleVars = require('postcss-simple-vars');
 const postcssFontpath   = require('postcss-fontpath');
 const postcssBemGrid    = require('bem-grid').postcss;
 const autoprefixer      = require('autoprefixer');
+
+// Required technologies
+const REQUIRED_TECHS = {
+    gate    : 'gate.final.js',
+    bemtree : 'bemtree.final.js',
+    bemhtml : 'bemhtml.final.js',
+    css     : 'final.css',
+    js      : 'final.js'
+};
 
 module.exports = class {
 
@@ -32,17 +42,7 @@ module.exports = class {
         this._isSourcemap = !isDev;
 
         this._addTechsAndTargets(levels);
-
-        const tasks = {
-            bemtree : 'bemtree.final.js',
-            bemhtml : 'bemhtml.final.js',
-            css     : 'final.css',
-            js      : 'final.js'
-        };
-
-        Object
-            .keys(tasks)
-            .map(taskName => this._addTask(taskName, tasks[taskName]))
+        this._addTasks();
     }
 
     _addTechsAndTargets(levels) {
@@ -50,6 +50,12 @@ module.exports = class {
             nodeConfig.addTechs(this._getTechs(levels));
             nodeConfig.addTargets(this._getTargets());
         });
+    }
+
+    _addTasks() {
+        Object
+            .keys(REQUIRED_TECHS)
+            .forEach(key => this._addTask(key, REQUIRED_TECHS[key]))
     }
 
     _addTask(taskName, fileSuffix) {
@@ -68,10 +74,11 @@ module.exports = class {
 
         return [].concat(
             this._getFilesTechs(levels),
-            this._getCssTechs(),
+            this._getGateTechs(),
             this._getBemtreeTechs(),
             this._getServerBemhtmlTechs(),
             this._getClientBemhtmlTechs(),
+            this._getCssTechs(),
             this._getClientJsTechs(),
             this._getOptimizationTechs()
         );
@@ -79,12 +86,15 @@ module.exports = class {
 
     _getTargets() {
 
-        return [
-            '?.final.css',
-            '?.final.js',
-            '?.bemhtml.final.js',
-            '?.bemtree.final.js'
-        ];
+        return Object
+            .keys(REQUIRED_TECHS)
+            .reduce((result, key) => {
+                const target = '?.' + REQUIRED_TECHS[key];
+
+                result.push(target);
+
+                return result;
+            }, []);
     }
 
     _getFilesTechs(levels) {
@@ -101,45 +111,13 @@ module.exports = class {
         ]
     }
 
-    _getCssTechs() {
+    _getGateTechs() {
 
         return [
-            [enbStylus, {
-                sourceSuffixes : ['styl', 'css', 'post.css'],
-                target         : '?.post.css'
-            }],
-            [enbPostcss, {
-                source    : '?.post.css',
-                target    : '?.css',
-                sourcemap : this._isSourcemap,
-                plugins   : this._getPostcssPlugins()
+            [enbGateMethod, {
+                target : '?.gate.final.js'
             }]
         ]
-    }
-
-    _getPostcssPlugins() {
-
-        return [
-            postcssSimpleVars({
-                variables : {
-                    fontsDir : '../../blocks/font'
-                }
-            }),
-            postcssFontpath,
-            postcssBemGrid({
-                maxWidth: '1100px',
-                gutter: '10px',
-                flex: 'flex'
-            }),
-            autoprefixer({
-                browsers : [
-                    'ie >= 10',
-                    'last 2 versions',
-                    'opera 12.1',
-                    '> 2%'
-                ]
-            })
-        ];
     }
 
     _getBemtreeTechs() {
@@ -147,12 +125,7 @@ module.exports = class {
         return [
             [enbBemtree, {
                 devMode    : false,
-                includeVow : false,
-                requires: {
-                    moment: {
-                        commonJS: 'moment'
-                    }
-                }
+                includeVow : false
             }]
         ]
     }
@@ -205,6 +178,47 @@ module.exports = class {
                 ]
             }]
         ]
+    }
+
+    _getCssTechs() {
+
+        return [
+            [enbStylus, {
+                sourceSuffixes : ['styl', 'css', 'post.css'],
+                target         : '?.post.css'
+            }],
+            [enbPostcss, {
+                source    : '?.post.css',
+                target    : '?.css',
+                sourcemap : this._isSourcemap,
+                plugins   : this._getPostcssPlugins()
+            }]
+        ]
+    }
+
+    _getPostcssPlugins() {
+
+        return [
+            postcssSimpleVars({
+                variables : {
+                    fontsDir : '../../blocks/font'
+                }
+            }),
+            postcssFontpath,
+            postcssBemGrid({
+                maxWidth: '1100px',
+                gutter: '10px',
+                flex: 'flex'
+            }),
+            autoprefixer({
+                browsers : [
+                    'ie >= 10',
+                    'last 2 versions',
+                    'opera 12.1',
+                    '> 2%'
+                ]
+            })
+        ];
     }
 
     _getOptimizationTechs() {
