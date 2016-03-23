@@ -51,7 +51,7 @@ module.exports = buildFlow.create()
 
             fileList.forEach(function (file) {
                 var filename = file.fullname,
-                    // filename without suffix
+                // filename without suffix
                     key = filename.slice(0, -(file.suffix.length + 1));
 
                 // remove base templates as they are inside bem-xjst since 2.x
@@ -122,7 +122,7 @@ module.exports = buildFlow.create()
                     wrap: false,
                     naming: this._naming
                 },
-                // join source code
+            // join source code
                 sourceCode = sources.map(function (source) {
                     return source.contents;
                 }).join(EOL),
