@@ -10,8 +10,12 @@ const enbBorschik    = require('enb-borschik/techs/borschik');
 const enbStylus      = require('enb-stylus/techs/stylus');
 const enbPostcss     = require('enb-bundle-postcss/techs/enb-bundle-postcss');
 const enbBrowserJs   = require('enb-js/techs/browser-js');
-const enbBemtree     = require('enb-bemxjst/techs/bemtree');
-const enbBemhtml     = require('enb-bemxjst/techs/bemhtml');
+
+//const enbBemtree     = require('enb-bemxjst/techs/bemtree');
+//const enbBemhtml     = require('enb-bemxjst/techs/bemhtml');
+const enbBemtree     = require('app-bem/components/enb/techs/bemtree'); // TODO: https://github.com/enb/enb-bemxjst/issues/139
+const enbBemhtml     = require('app-bem/components/enb/techs/bemhtml'); // TODO: https://github.com/enb/enb-bemxjst/issues/139
+
 const enbGateMethod  = require('app-bem/components/enb/techs/gate-method');
 
 // Postcss plugins
@@ -134,7 +138,7 @@ module.exports = class {
 
         return [
             [enbBemhtml, {
-                devMode : false
+                sourceSuffixes : ['bemhtml', 'bemhtml.js'],
             }]
         ]
     }

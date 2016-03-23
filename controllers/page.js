@@ -128,14 +128,13 @@ module.exports = class extends Controller {
         return q
             .all(promises)
             .then(data => {
+                const output = this._param.query('__output', 'html');
 
                 blocks.forEach((block, index) => {
                     bundleData.bemtree.data[block] = data[index];
                 });
 
-                const output = this._param.query('__output', 'html');
-
-                return bundle.applyData(bundleData, output);
+                return bundle.render(bundleData, output);
             })
             .then(this._sendHtmlResponse.bind(this));
     }

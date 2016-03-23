@@ -5,13 +5,14 @@ const vm  = require('vm');
 const vow = require('vow');
 const enb = require('enb');
 
-class Bundle {
+module.exports = class {
 
     constructor(options) {
         this._bemtreeContext = {
-            console : console, // TODO: if dev
+            console : console,
             Vow     : vow,
-            require : require // TODO
+            global  : global,
+            require : require
         };
 
         if (undefined !== options.root) {
@@ -65,33 +66,31 @@ class Bundle {
         });
     }
 
-    applyData(data, output) {
-
-        return this
+    render(data, output) {
+        const bemjson = this
             .getBemtree()
-            .apply(data)
-            .then(bemjson => {
-                let content;
+            .apply(data);
 
-                switch (output) {
-                    case 'bemjson' : {
-                        content = [
-                            '<pre>',
-                            JSON.stringify(bemjson, null, 4),
-                            '</pre>'
-                        ].join('\n');
+        let content;
 
-                        break;
-                    }
-                    default: {
-                        content = this
-                            .getBemhtml()
-                            .apply(bemjson);
-                    }
-                }
+        switch (output) {
+            case 'bemjson' : {
+                content = [
+                    '<pre>',
+                    JSON.stringify(bemjson, null, 4),
+                    '</pre>'
+                ].join('\n');
 
-                return content;
-            });
+                break;
+            }
+            default: {
+                content = this
+                    .getBemhtml()
+                    .apply(bemjson);
+            }
+        }
+
+        return content;
     }
 
     addBemtreeContext(context) {
@@ -133,5 +132,3 @@ class Bundle {
         return this._gateMethod;
     }
 }
-
-module.exports = Bundle;
