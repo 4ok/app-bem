@@ -78,7 +78,7 @@ module.exports = class extends Controller {
     }
 
     _showPage(page) {
-        let context = page.context || {
+        const context = page.context || {
             block : 'page'
         };
         Object.assign(context, {
