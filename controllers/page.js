@@ -47,7 +47,7 @@ module.exports = class extends Controller {
         const articleAliasChain  = this._param.route('article_alias_chain');
 
         return this._gate
-            .callMethod('base:article', {
+            .callMethod('data:article', {
                 filter : {
                     alias : {
                         '#chain' : articleAliasChain
@@ -60,7 +60,7 @@ module.exports = class extends Controller {
     _findPage() {
 
         return this._gate
-            .callMethod('base:page', {
+            .callMethod('data:page', {
                 filter: {
                     alias : this._param.route('page_alias')
                 }
