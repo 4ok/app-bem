@@ -8,18 +8,11 @@
   "dependencies": {
     "app-core": "git+https://github.com/4ok/app-core.git",
     "app-gate": "git+https://github.com/4ok/app-gate.git",
+    "autoprefixer": "^6.3.4",
     "borschik": "^1.5.2",
+    "borschik-tech-cleancss": "^2.1.0",
     "break-promise": "git+https://github.com/4ok/break-promise.git",
     "config": "^1.19.0",
-    "enb": "^1.2.0",
-    "logger": "git+https://github.com/4ok/logger.git",
-    "markdown-bemjson": "git+https://github.com/bem-incubator/markdown-bemjson.git",
-    "q": "^1.4.1",
-    "qs": "^6.1.0",
-    "underscore.string": "^3.3.4",
-    "vow": "^0.4.12",
-    "autoprefixer": "^6.3.4",
-    "borschik-tech-cleancss": "^2.1.0",
     "enb": "^1.2.0",
     "enb-bem-techs": "^2.2.1",
     "enb-bemxjst": "^6.0.0",
@@ -27,7 +20,13 @@
     "enb-bundle-postcss": "git+https://github.com/4ok/enb-bundle-postcss.git",
     "enb-js": "^1.1.0",
     "enb-stylus": "^2.3.0",
-    "postcss-fontpath": "^0.2.0"
+    "logger": "git+https://github.com/4ok/logger.git",
+    "markdown-bemjson": "git+https://github.com/bem-incubator/markdown-bemjson.git",
+    "postcss-fontpath": "^0.2.0",
+    "q": "^1.4.1",
+    "qs": "^6.1.0",
+    "underscore.string": "^3.3.4",
+    "vow": "^0.4.12"
   },
   "private": true
 }
