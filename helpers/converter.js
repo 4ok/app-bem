@@ -1,6 +1,6 @@
 'use strict';
 
-const Converter       = require('app-core/helpers/converter.js');
+const Converter       = require('app-core/helpers/converter');
 const markdownBemjson = require('markdown-bemjson')();
 const string          = require('underscore.string');
 

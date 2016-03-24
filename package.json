@@ -11,7 +11,6 @@
     "borschik": "^1.5.2",
     "break-promise": "git+https://github.com/4ok/break-promise.git",
     "config": "^1.19.0",
-    "controller-abstract": "git+https://github.com/4ok/controller-abstract.git",
     "enb": "^1.2.0",
     "logger": "git+https://github.com/4ok/logger.git",
     "markdown-bemjson": "git+https://github.com/bem-incubator/markdown-bemjson.git",

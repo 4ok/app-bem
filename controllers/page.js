@@ -9,7 +9,7 @@ const Bundle        = require('../components/bundle');
 const Gate          = require('app-gate');
 const HelperFactory = require('app-core/components/helper/factory');
 const MethodContext = require('app-core/components/method-context');
-const Controller    = require('controller-abstract'); // TODO
+const Controller    = require('app-core/components/controller');
 
 const LOGGER_PROFILE_SEND_RESPONSE = 'Send response';
 
