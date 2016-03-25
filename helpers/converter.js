@@ -9,58 +9,69 @@ const crypto          = require('crypto');
 const bundleDir = '/Users/lipolyakov/development/projects/trusha/application/bem/bundles/index';
 const bemhtml = require(bundleDir + '/index.bemhtml.final.js').BEMHTML;
 
+const METHODS_CACHE = {};
+
 module.exports = class extends Helper {
 
-    constructor(http) {
-        super(http);
-        this._cache = {};
-    }
-
     bemjsonToHtml(bemjson) {
-        return bemhtml.apply(bemjson)
+
+        return this._cache('bemjsonToHtml', arguments, () => {
+            return bemhtml.apply(bemjson);
+        });
     }
 
     bemjsonToText(bemjson, length, pruneString) {
-        const html = this.bemjsonToHtml(bemjson);
-        let result = string.stripTags(html);
 
-        // Add space after punctuation
-        result = result.replace(/[а-яa-z0-9]([\.,!:;])/gi, '$1 ');
+        return this._cache('bemjsonToText', arguments, () => {
+            const html = this.bemjsonToHtml(bemjson);
+            let result = string.stripTags(html);
 
-        string.clean(result);
+            // Add space after punctuation
+            result = result.replace(/[а-яa-z0-9]([\.,!:;])/gi, '$1 ');
 
-        if (length) {
-            result = string.prune(result, length, pruneString || '&hellip;');
-        }
+            string.clean(result);
 
-        return result;
+            if (length) {
+                result = string.prune(result, length, pruneString || '&hellip;');
+            }
+
+            return result;
+        });
     }
 
     markdownToBemjson(markdown) {
-        return markdownBemjson.convert(markdown);
+
+        return this._cache('markdownToBemjson', arguments, () => {
+            return markdownBemjson.convert(markdown);
+        });
     }
 
     markdownToText(markdown, length) {
-        const hash = this._getMethodParamsHash('markdownToText', arguments);
 
-        if (!this._cache[hash]) {
+        return this._cache('markdownToText', arguments, () => {
             const bemjson = this.markdownToBemjson(markdown);
 
-            this._cache[hash] = this.bemjsonToText(bemjson, length);
+            return this.bemjsonToText(bemjson, length);
+        });
+    }
+
+    _cache(name, args, fn) {
+        const hash = this._getMethodParamsHash(name, args);
+
+        if (!METHODS_CACHE[hash]) {
+            METHODS_CACHE[hash] = fn();
         }
 
-        return this._cache[hash];
+        return METHODS_CACHE[hash];
     }
 
     _getMethodParamsHash(method, args) {
-        const params = Array.prototype.join.call(args, '|');
-        const str    = params
-            .map(param => (typeof param == 'object')
-                ? JSON.parse(param)
-                : param
-            )
-            .concat(method)
-            .join('~');
+        const params = Array.prototype
+            .slice
+            .call(args, '|')
+            .concat(method);
+
+        const str = JSON.stringify(params);
 
         return crypto
             .createHash('sha256')
