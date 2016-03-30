@@ -1,15 +1,43 @@
 'use strict';
 
-const Helper          = require('app-core/components/helper/abstract');
-const string          = require('underscore.string');
-const markdownBemjson = require('markdown-bemjson')();
-const crypto          = require('crypto');
+const Helper = require('app-core/components/helper/abstract');
+const string = require('underscore.string');
+const crypto = require('crypto');
 
 // TODO
 const bundleDir = '/Users/lipolyakov/development/projects/trusha/application/bem/bundles/index';
 const bemhtml = require(bundleDir + '/index.bemhtml.final.js').BEMHTML;
 
 const METHODS_CACHE = {};
+
+// TODO
+const rules = {
+
+    code : function (code, lang) {
+        var result;
+
+        if ('javascript' == lang) {
+            result = JSON.parse(code);
+        } else {
+            result = {
+                elem    : 'code',
+                content : code
+            };
+
+            if (lang) {
+                result.mods  = {
+                    lang : 'lang'
+                };
+            }
+        }
+
+        return result;
+    }
+};
+
+const markdownBemjson = require('markdown-bemjson')({
+    rules : rules
+});
 
 module.exports = class extends Helper {
 
