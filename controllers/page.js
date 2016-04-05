@@ -3,7 +3,6 @@
 const fs            = require('fs');
 const q             = require('q');
 const logger        = require('logger')();
-const BreakPromise  = require('break-promise');
 const config        = require('config');
 const Bundle        = require('../components/bundle');
 const Gate          = require('app-gate');
@@ -30,14 +29,14 @@ module.exports = class extends Controller {
 
         // TODO
         if (this._param.route('article_alias_chain')) {
-            this._aaa()
-                .then(this._findPage.bind(this))
+            this
+                ._aaa()
                 .then(this._showPage.bind(this))
                 .fail(this._onError.bind(this))
                 .done();
         } else {
-            this._findPage()
-                .then(this._showPage.bind(this))
+            this
+                ._showPage()
                 .fail(this._onError.bind(this))
                 .done();
         }
@@ -57,34 +56,7 @@ module.exports = class extends Controller {
             .then(page => this._request.setParam('route.params.article_id', page._id));
     }
 
-    _findPage() {
-
-        return this._gate
-            .callMethod('data:page', {
-                filter: {
-                    alias : this._param.route('page_alias')
-                }
-            })
-            .then(page => {
-
-                if (!page) {
-                    this._response.send404('Page not found');
-
-                    throw new BreakPromise('Page not found', 'warn');
-                }
-
-                return page;
-            });
-    }
-
     _showPage(page) {
-        const context = page.context || {
-            block : 'page'
-        };
-        Object.assign(context, {
-            content : page.content,
-            seo     : page.seo
-        });
 
         return this._render('index', { // TODO index
             block   : 'index',
@@ -92,7 +64,7 @@ module.exports = class extends Controller {
                 helper : this._helperFactory.getHelper.bind(this._helperFactory),
                 data   : {}
             },
-            context : context
+            context : this._param.route('context')
         });
     }
 
@@ -113,11 +85,11 @@ module.exports = class extends Controller {
             .all(promises)
             .then(data => {
                 const output = this._param.query('__output', 'html');
-        
+
                 blocks.forEach((block, index) => {
                     bundleData.bemtree.data[block] = data[index];
                 });
-        
+
                 return bundle.render(bundleData, output);
             })
             .then(this._sendHtmlResponse.bind(this));
