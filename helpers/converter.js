@@ -1,9 +1,9 @@
 'use strict';
 
-const Helper          = require('app-core/components/helper/abstract');
-const string          = require('underscore.string');
+const Helper = require('app-core/components/helper/abstract');
+const string = require('underscore.string');
 
-const crypto          = require('crypto');
+const crypto = require('crypto');
 
 // TODO
 const bundleDir = '/Users/lipolyakov/development/projects/trusha/application/bem/bundles/index';
@@ -14,19 +14,19 @@ const METHODS_CACHE = {};
 // TODO
 const rules = {
 
-    code : function (code, lang) {
+    code(code, lang) {
         var result;
 
-        if ('javascript' == lang) {
+        if (lang === 'javascript') {
             result = JSON.parse(code);
         } else {
             result = {
-                elem    : 'code',
+                elem : 'code',
                 content : code
             };
 
             if (lang) {
-                result.mods  = {
+                result.mods = {
                     lang : 'lang'
                 };
             }
@@ -43,14 +43,14 @@ const markdownBemjson = require('markdown-bemjson')({
 module.exports = class extends Helper {
 
     bemjsonToHtml(bemjson) {
-
-        return this._cache('bemjsonToHtml', arguments, () => {
-            return bemhtml.apply(bemjson);
-        });
+        return this._cache(
+            'bemjsonToHtml',
+            arguments,
+            () => bemhtml.apply(bemjson)
+        );
     }
 
     bemjsonToText(bemjson, length, pruneString) {
-
         return this._cache('bemjsonToText', arguments, () => {
             const html = this.bemjsonToHtml(bemjson);
             let result = string.stripTags(html);
@@ -69,14 +69,12 @@ module.exports = class extends Helper {
     }
 
     markdownToBemjson(markdown) {
-
         return this._cache('markdownToBemjson', arguments, () => {
             return markdownBemjson.convert(markdown);
         });
     }
 
     markdownToText(markdown, length) {
-
         return this._cache('markdownToText', arguments, () => {
             const bemjson = this.markdownToBemjson(markdown);
 

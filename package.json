@@ -27,5 +27,12 @@
     "underscore.string": "^3.3.4",
     "vow": "^0.4.12"
   },
-  "private": true
+  "private": true,
+  "scripts": {
+    "test": "node_modules/.bin/eslint ."
+  },
+  "devDependencies": {
+    "eslint": "^2.7.0",
+    "eslint-config-airbnb": "^6.2.0"
+  }
 }

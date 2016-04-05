@@ -1,14 +1,13 @@
 'use strict';
 
-const fs            = require('fs');
-const q             = require('q');
-const logger        = require('logger')();
-const config        = require('config');
-const Bundle        = require('../components/bundle');
-const Gate          = require('app-gate');
+const q = require('q');
+const logger = require('logger')();
+const config = require('config');
+const Bundle = require('../components/bundle');
+const Gate = require('app-gate');
 const HelperFactory = require('app-core/components/helper/factory');
 const MethodContext = require('app-core/components/method-context');
-const Controller    = require('app-core/components/controller');
+const Controller = require('app-core/components/controller');
 
 const LOGGER_PROFILE_SEND_RESPONSE = 'Send response';
 
@@ -43,7 +42,7 @@ module.exports = class extends Controller {
     }
 
     _aaa() { // TODO
-        const articleAliasChain  = this._param.route('article_alias_chain');
+        const articleAliasChain = this._param.route('article_alias_chain');
 
         return this._gate
             .callMethod('data:article', {
@@ -56,13 +55,12 @@ module.exports = class extends Controller {
             .then(page => this._request.setParam('route.params.article_id', page._id));
     }
 
-    _showPage(page) {
-
+    _showPage() {
         return this._render('index', { // TODO index
-            block   : 'index',
+            block : 'index',
             bemtree : {
                 helper : this._helperFactory.getHelper.bind(this._helperFactory),
-                data   : {}
+                data : {}
             },
             context : this._param.route('context')
         });
@@ -70,13 +68,13 @@ module.exports = class extends Controller {
 
     _render(bundleName, bundleData) { // TODO
         const bundle = new Bundle({
-            root   : config.rootPath + '/bem', // TODO
+            root : config.rootPath + '/bem', // TODO
             bundle : bundleName
         });
-        const context     = new MethodContext(this._param)
+        const context = new MethodContext(this._param);
         let methods = bundle.getGateMethod().call(context);
 
-        const blocks   = Object.keys(methods);
+        const blocks = Object.keys(methods);
         const promises = blocks.map(block => {
             return this._gate.callMethod(methods[block]);
         });
@@ -100,7 +98,7 @@ module.exports = class extends Controller {
 
         this._response
             .setHeader({
-                'Content-Type': 'text/html; charset=utf-8'
+                'Content-Type' : 'text/html; charset=utf-8'
             })
             .send(content);
     }

@@ -1,7 +1,7 @@
 'use strict';
 
-const fs  = require('fs');
-const vm  = require('vm');
+const fs = require('fs');
+const vm = require('vm');
 const vow = require('vow');
 const enb = require('enb');
 
@@ -10,8 +10,8 @@ module.exports = class {
     constructor(options) {
         this._bemtreeContext = {
             console : console,
-            Vow     : vow,
-            global  : global,
+            Vow : vow,
+            global : global,
             require : require
         };
 
@@ -35,8 +35,8 @@ module.exports = class {
                     options.bundle
                 ].join('/');
 
-                this._bemhtmlPath    = pathProlog + '.bemhtml.final.js'; // TODO
-                this._bemtreePath    = pathProlog + '.bemtree.final.js'; // TODO
+                this._bemhtmlPath = pathProlog + '.bemhtml.final.js'; // TODO
+                this._bemtreePath = pathProlog + '.bemtree.final.js'; // TODO
                 this._gateMethodPath = pathProlog + '.gate.final.js'; // TODO
             }
         }
@@ -46,24 +46,8 @@ module.exports = class {
         }
     }
 
-    static make() {
-        const bundle = new Bundle({
-            root : config.rootPath + '/bem' // TODO
-        });
-
-        return bundle.make();
-    }
-
     make() {
-
-        if (!options.cache) {
-            options.cache = true;
-        }
-
-        return enb.make([], {
-            dir   : options.root,
-            cache : options.cache
-        });
+        return enb.make();
     }
 
     render(data, output) {
@@ -95,9 +79,9 @@ module.exports = class {
 
     addBemtreeContext(context) {
 
-        for (let key in context) {
+        Object.keys(context).forEach(key => {
             this._bemtreeContext[key] = context[key];
-        }
+        });
     }
 
     getBemtree() {
@@ -131,4 +115,4 @@ module.exports = class {
 
         return this._gateMethod;
     }
-}
+};

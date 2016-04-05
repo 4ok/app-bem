@@ -1,12 +1,11 @@
 'use strict';
 
-const enb       = require('enb');
+const enb = require('enb');
 const buildFlow = enb.buildFlow;
-const asyncFs   = enb.asyncFs;
-const vow       = require('vow');
+const asyncFs = enb.asyncFs;
+const vow = require('vow');
 
 const NEW_LINE = '\n';
-
 const TAB = ' '.repeat(4);
 
 module.exports = module.exports = buildFlow
@@ -15,12 +14,10 @@ module.exports = module.exports = buildFlow
     .target('target', '?.gate.js')
     .useFileList('gate.js')
     .justJoinFilesWithComments()
-    .builder(function (filesPaths) {
-
-        return this.
-            _readFiles(filesPaths)
+    .builder((filesPaths) => {
+        return this
+            ._readFiles(filesPaths)
             .then((data) => {
-
                 return this._getFormattedString([
                     "'use strict';",
                     '',
@@ -34,16 +31,10 @@ module.exports = module.exports = buildFlow
     })
     .methods({
 
-        _getResultFunctionBody: function (data) {
+        _getResultFunctionBody(data) {
             const content = this
                 ._getJoinedContents(data)
                 .replace(/^/gm, TAB);
-
-            // return this._getFormattedString([
-            //     'return {',
-            //     content,
-            //     '}'
-            // ], NEW_LINE, TAB);
 
             return this._getFormattedString([
                 content,
@@ -51,21 +42,14 @@ module.exports = module.exports = buildFlow
             ], NEW_LINE, TAB);
         },
 
-        _getJoinedContents: function (data) {
-
+        _getJoinedContents(data) {
             return data.map(item => {
-                const content = item.content
-                    .trim();
-                    // .replace(/;$/, '');
-
-                // return item.block + ' : ' + content;
-                return content;
+                return item.content.trim();
             })
-            // .join(',\n');
-            .join('\n\n');
+            .join(NEW_LINE.repeat(2));
         },
 
-        _getFormattedString: function (rows, separator, afterSeparator) {
+        _getFormattedString(rows, separator, afterSeparator) {
             let result;
 
             if (separator) {
@@ -79,23 +63,20 @@ module.exports = module.exports = buildFlow
             return result;
         },
 
-        _readFiles: function (filesPaths) {
-
+        _readFiles(filesPaths) {
             return vow.all(filesPaths.map((file) => {
-
                 return asyncFs
                     .read(file.fullname, 'utf-8')
                     .then(content => {
-
                         return {
-                            block   : this._getFileBlockName(file),
+                            block : this._getFileBlockName(file),
                             content : content
-                        }
+                        };
                     });
             }));
         },
 
-        _getFileBlockName: function (file) {
+        _getFileBlockName(file) {
             let result = file.name.split('.')[0];
 
             if (/[^\w\d_]/.test(result)) {
@@ -106,13 +87,12 @@ module.exports = module.exports = buildFlow
         },
 
         // TODO
-        _getMethods: function () {
-
+        _getMethods() {
             return `
     const result = {};
     let blockName;
     let isTrueCondition = true;
-    
+
     const match = (condition) => {
 
         if (typeof condition == 'function') {
