@@ -1,8 +1,9 @@
 'use strict';
 
-const Helper = require('app-core/components/helper/abstract');
-const string = require('underscore.string');
-const crypto = require('crypto');
+const Helper          = require('app-core/components/helper/abstract');
+const string          = require('underscore.string');
+
+const crypto          = require('crypto');
 
 // TODO
 const bundleDir = '/Users/lipolyakov/development/projects/trusha/application/bem/bundles/index';

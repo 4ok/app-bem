@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const enb       = require('enb');
 const buildFlow = enb.buildFlow;
@@ -22,9 +22,10 @@ module.exports = module.exports = buildFlow
             .then((data) => {
 
                 return this._getFormattedString([
-                    "'use strict'",
+                    "'use strict';",
                     '',
                     'module.exports = function () {',
+                    this._getMethods(),
                     '',
                     this._getResultFunctionBody(data),
                     '}'
@@ -38,10 +39,15 @@ module.exports = module.exports = buildFlow
                 ._getJoinedContents(data)
                 .replace(/^/gm, TAB);
 
+            // return this._getFormattedString([
+            //     'return {',
+            //     content,
+            //     '}'
+            // ], NEW_LINE, TAB);
+
             return this._getFormattedString([
-                'return {',
                 content,
-                '}'
+                'return result;'
             ], NEW_LINE, TAB);
         },
 
@@ -49,12 +55,14 @@ module.exports = module.exports = buildFlow
 
             return data.map(item => {
                 const content = item.content
-                    .trim()
-                    .replace(/;$/, '');
+                    .trim();
+                    // .replace(/;$/, '');
 
-                return item.block + ' : ' + content;
+                // return item.block + ' : ' + content;
+                return content;
             })
-            .join(',\n');
+            // .join(',\n');
+            .join('\n\n');
         },
 
         _getFormattedString: function (rows, separator, afterSeparator) {
@@ -95,6 +103,52 @@ module.exports = module.exports = buildFlow
             }
 
             return result;
+        },
+
+        // TODO
+        _getMethods: function () {
+
+            return `
+    const result = {};
+    let blockName;
+    let isTrueCondition = true;
+    
+    const match = (condition) => {
+
+        if (typeof condition == 'function') {
+            condition = condition(this);
+        }
+
+        isTrueCondition = condition;
+
+        return () => {};
+    };
+
+    const data = () => {
+
+        return (methodsParams) => {
+
+            if (isTrueCondition) {
+
+                if (typeof methodsParams == 'function') {
+                    methodsParams = methodsParams(this);
+                }
+
+                result[blockName] = methodsParams;
+            }
+        };
+    };
+
+    const block = (name) => {
+        isTrueCondition = true;
+        blockName = name;
+
+        const result = () => {};
+        result.match = match;
+
+        return result;
+    };
+`;
         }
     })
     .createTech();

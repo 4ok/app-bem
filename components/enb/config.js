@@ -16,7 +16,7 @@ const enbBrowserJs   = require('enb-js/techs/browser-js');
 const enbBemtree     = require('app-bem/components/enb/enb-bemxjst/techs/bemtree'); // TODO: https://github.com/enb/enb-bemxjst/issues/139
 const enbBemhtml     = require('app-bem/components/enb/enb-bemxjst/techs/bemhtml'); // TODO: https://github.com/enb/enb-bemxjst/issues/139
 
-const enbGateMethod  = require('app-bem/components/enb/techs/gate-method');
+const enbGateMethod  = require('app-bem/components/enb/techs/gate/method');
 
 // Postcss plugins
 const postcssSimpleVars = require('postcss-simple-vars');

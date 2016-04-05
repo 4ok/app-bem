@@ -104,22 +104,6 @@ module.exports = class extends Controller {
         const context     = new MethodContext(this._param)
         let methods = bundle.getGateMethod().call(context);
 
-        methods = Object
-            .keys(methods)
-            .reduce((result, block) => {
-                let params = methods[block];
-
-                if (typeof params == 'function') {
-                    params = params();
-                }
-
-                if (params && Object.keys(params).length > 0) {
-                    result[block] = params;
-                }
-
-                return result;
-            }, {});
-
         const blocks   = Object.keys(methods);
         const promises = blocks.map(block => {
             return this._gate.callMethod(methods[block]);
@@ -129,11 +113,11 @@ module.exports = class extends Controller {
             .all(promises)
             .then(data => {
                 const output = this._param.query('__output', 'html');
-
+        
                 blocks.forEach((block, index) => {
                     bundleData.bemtree.data[block] = data[index];
                 });
-
+        
                 return bundle.render(bundleData, output);
             })
             .then(this._sendHtmlResponse.bind(this));
