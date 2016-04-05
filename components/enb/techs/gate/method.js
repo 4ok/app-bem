@@ -8,13 +8,13 @@ const vow = require('vow');
 const NEW_LINE = '\n';
 const TAB = ' '.repeat(4);
 
-module.exports = module.exports = buildFlow
+module.exports = buildFlow
     .create()
     .name('gate-method')
     .target('target', '?.gate.js')
     .useFileList('gate.js')
     .justJoinFilesWithComments()
-    .builder((filesPaths) => {
+    .builder(function build(filesPaths) {
         return this
             ._readFiles(filesPaths)
             .then((data) => {
@@ -44,9 +44,9 @@ module.exports = module.exports = buildFlow
 
         _getJoinedContents(data) {
             return data.map(item => {
-                return item.content.trim();
-            })
-            .join(NEW_LINE.repeat(2));
+                    return item.content.trim();
+                })
+                .join(NEW_LINE.repeat(2));
         },
 
         _getFormattedString(rows, separator, afterSeparator) {
@@ -65,6 +65,7 @@ module.exports = module.exports = buildFlow
 
         _readFiles(filesPaths) {
             return vow.all(filesPaths.map((file) => {
+
                 return asyncFs
                     .read(file.fullname, 'utf-8')
                     .then(content => {
