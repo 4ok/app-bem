@@ -44,9 +44,9 @@ module.exports = buildFlow
 
         _getJoinedContents(data) {
             return data.map(item => {
-                    return item.content.trim();
-                })
-                .join(NEW_LINE.repeat(2));
+                return item.content.trim();
+            })
+            .join(NEW_LINE.repeat(2));
         },
 
         _getFormattedString(rows, separator, afterSeparator) {
@@ -65,7 +65,6 @@ module.exports = buildFlow
 
         _readFiles(filesPaths) {
             return vow.all(filesPaths.map((file) => {
-
                 return asyncFs
                     .read(file.fullname, 'utf-8')
                     .then(content => {
