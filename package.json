@@ -20,7 +20,7 @@
     "enb-js": "^1.1.0",
     "enb-stylus": "^2.3.0",
     "logger": "git+https://github.com/4ok/logger.git",
-    "markdown-bemjson": "^2.0.2",
+    "markdown-bemjson": "^3.0.0",
     "postcss-fontpath": "^0.2.0",
     "q": "^1.4.1",
     "qs": "^6.1.0",
