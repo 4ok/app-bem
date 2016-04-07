@@ -18,7 +18,7 @@ module.exports = class extends Controller {
 
         this._helperFactory = new HelperFactory(http, [
             __dirname + '/../helpers',
-            'app-core/helpers'
+            'app-core/helpers',
         ]);
         this._gate = new Gate();
     }
@@ -48,9 +48,9 @@ module.exports = class extends Controller {
             .callMethod('data:article', {
                 filter : {
                     alias : {
-                        '#chain' : articleAliasChain
-                    }
-                }
+                        '#chain' : articleAliasChain,
+                    },
+                },
             })
             .then(page => this._request.setParam('route.params.article_id', page._id));
     }
@@ -60,24 +60,22 @@ module.exports = class extends Controller {
             block : 'index',
             bemtree : {
                 helper : this._helperFactory.getHelper.bind(this._helperFactory),
-                data : {}
+                data : {},
             },
-            context : this._param.route('context')
+            context : this._param.route('context'),
         });
     }
 
     _render(bundleName, bundleData) { // TODO
         const bundle = new Bundle({
             root : config.rootPath + '/bem', // TODO
-            bundle : bundleName
+            bundle : bundleName,
         });
         const context = new MethodContext(this._param);
-        let methods = bundle.getGateMethod().call(context);
+        const methods = bundle.getGateMethod().call(context);
 
         const blocks = Object.keys(methods);
-        const promises = blocks.map(block => {
-            return this._gate.callMethod(methods[block]);
-        });
+        const promises = blocks.map(block => this._gate.callMethod(methods[block]));
 
         return q
             .all(promises)
@@ -98,7 +96,7 @@ module.exports = class extends Controller {
 
         this._response
             .setHeader({
-                'Content-Type' : 'text/html; charset=utf-8'
+                'Content-Type' : 'text/html; charset=utf-8',
             })
             .send(content);
     }

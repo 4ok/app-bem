@@ -15,29 +15,29 @@ const METHODS_CACHE = {};
 const rules = {
 
     code(code, lang) {
-        var result;
+        let result;
 
         if (lang === 'javascript') {
             result = JSON.parse(code);
         } else {
             result = {
                 elem : 'code',
-                content : code
+                content : code,
             };
 
             if (lang) {
                 result.mods = {
-                    lang : 'lang'
+                    lang : 'lang',
                 };
             }
         }
 
         return result;
-    }
+    },
 };
 
 const markdownBemjson = require('markdown-bemjson')({
-    rules : rules
+    rules,
 });
 
 module.exports = class extends Helper {
@@ -69,9 +69,11 @@ module.exports = class extends Helper {
     }
 
     markdownToBemjson(markdown) {
-        return this._cache('markdownToBemjson', arguments, () => {
-            return markdownBemjson.convert(markdown);
-        });
+        return this._cache(
+            'markdownToBemjson',
+            arguments,
+            () => markdownBemjson.convert(markdown)
+        );
     }
 
     markdownToText(markdown, length) {

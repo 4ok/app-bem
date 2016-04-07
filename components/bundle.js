@@ -2,17 +2,17 @@
 
 const fs = require('fs');
 const vm = require('vm');
-const vow = require('vow');
+const Vow = require('vow');
 const enb = require('enb');
 
 module.exports = class {
 
     constructor(options) {
         this._bemtreeContext = {
-            console : console,
-            Vow : vow,
-            global : global,
-            require : require
+            console,
+            global,
+            require,
+            Vow,
         };
 
         if (undefined !== options.root) {
@@ -32,7 +32,7 @@ module.exports = class {
                     options.root,
                     level,
                     options.bundle,
-                    options.bundle
+                    options.bundle,
                 ].join('/');
 
                 this._bemhtmlPath = pathProlog + '.bemhtml.final.js'; // TODO
@@ -62,7 +62,7 @@ module.exports = class {
                 content = [
                     '<pre>',
                     JSON.stringify(bemjson, null, 4),
-                    '</pre>'
+                    '</pre>',
                 ].join('\n');
 
                 break;

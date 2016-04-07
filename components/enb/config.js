@@ -31,7 +31,7 @@ const REQUIRED_TECHS = {
     bemtree : 'bemtree.final.js',
     bemhtml : 'bemhtml.final.js',
     css : 'final.css',
-    js : 'final.js'
+    js : 'final.js',
 };
 
 module.exports = class {
@@ -52,7 +52,7 @@ module.exports = class {
     }
 
     _addTechsAndTargets(levels) {
-        this._config.nodes(this._nodes, (nodeConfig) => {
+        this._config.nodes(this._nodes, nodeConfig => {
             nodeConfig.addTechs(this._getTechs(levels));
             nodeConfig.addTargets(this._getTargets());
         });
@@ -66,13 +66,14 @@ module.exports = class {
 
     _addTask(taskName, fileSuffix) {
 
-        this._config.task(taskName, (task) => {
-            return task.buildTargets(this._nodes.map((node) => {
+        this._config.task(taskName, task =>
+
+            task.buildTargets(this._nodes.map(node => {
                 const fileName = path.basename(node) + '.' + fileSuffix;
 
                 return path.join(node, fileName);
-            }));
-        });
+            }))
+        );
     }
 
     _getTechs(levels) {
@@ -103,21 +104,21 @@ module.exports = class {
     _getFilesTechs(levels) {
         return [
             [enbBaseTechs.levels, {
-                levels : levels
+                levels,
             }],
             [enbFileProvide, {
-                target : '?.bemdecl.js'
+                target : '?.bemdecl.js',
             }],
             [enbBaseTechs.deps],
-            [enbBaseTechs.files]
+            [enbBaseTechs.files],
         ];
     }
 
     _getGateTechs() {
         return [
             [enbGateMethod, {
-                target : '?.gate.final.js'
-            }]
+                target : '?.gate.final.js',
+            }],
         ];
     }
 
@@ -125,16 +126,16 @@ module.exports = class {
         return [
             [enbBemtree, {
                 devMode : false,
-                includeVow : false
-            }]
+                includeVow : false,
+            }],
         ];
     }
 
     _getServerBemhtmlTechs() {
         return [
             [enbBemhtml, {
-                sourceSuffixes : ['bemhtml', 'bemhtml.js']
-            }]
+                sourceSuffixes : ['bemhtml', 'bemhtml.js'],
+            }],
         ];
     }
 
@@ -143,37 +144,37 @@ module.exports = class {
             [enbBaseTechs.depsByTechToBemdecl, {
                 target : '?.bemhtml.bemdecl.js',
                 sourceTech : 'js',
-                destTech : 'bemhtml'
+                destTech : 'bemhtml',
             }],
             [enbBaseTechs.deps, {
                 target : '?.bemhtml.deps.js',
-                bemdeclFile : '?.bemhtml.bemdecl.js'
+                bemdeclFile : '?.bemhtml.bemdecl.js',
             }],
             [enbBaseTechs.files, {
                 depsFile : '?.bemhtml.deps.js',
                 filesTarget : '?.bemhtml.files',
-                dirsTarget : '?.bemhtml.dirs'
+                dirsTarget : '?.bemhtml.dirs',
             }],
             [enbBemhtml, {
                 target : '?.browser.bemhtml.js',
                 filesTarget : '?.bemhtml.files',
-                devMode : (process.env.BEMHTML_ENV === 'development')
-            }]
+                devMode : (process.env.BEMHTML_ENV === 'development'),
+            }],
         ];
     }
 
     _getClientJsTechs() {
         return [
             [enbBrowserJs, {
-                includeYM : true
+                includeYM : true,
             }],
             [enbFileMerge, {
                 target : '?.js',
                 sources : [
                     '?.browser.js',
-                    '?.browser.bemhtml.js'
-                ]
-            }]
+                    '?.browser.bemhtml.js',
+                ],
+            }],
         ];
     }
 
@@ -181,14 +182,14 @@ module.exports = class {
         return [
             [enbStylus, {
                 sourceSuffixes : ['styl', 'css', 'post.css'],
-                target : '?.post.css'
+                target : '?.post.css',
             }],
             [enbPostcss, {
                 source : '?.post.css',
                 target : '?.css',
                 sourcemap : this._isSourcemap,
-                plugins : this._getPostcssPlugins()
-            }]
+                plugins : this._getPostcssPlugins(),
+            }],
         ];
     }
 
@@ -196,23 +197,23 @@ module.exports = class {
         return [
             postcssSimpleVars({
                 variables : {
-                    fontsDir : '../../blocks/font'
-                }
+                    fontsDir : '../../blocks/font',
+                },
             }),
             postcssFontpath,
             postcssBemGrid({
                 maxWidth : '1100px',
                 gutter : '10px',
-                flex : 'flex'
+                flex : 'flex',
             }),
             autoprefixer({
                 browsers : [
                     'ie >= 10',
                     'last 2 versions',
                     'opera 12.1',
-                    '> 2%'
-                ]
-            })
+                    '> 2%',
+                ],
+            }),
         ];
     }
 
@@ -224,28 +225,28 @@ module.exports = class {
                 source : '?.css',
                 target : '?.final.css',
                 tech : 'cleancss',
-                minify : isMinify
+                minify : isMinify,
             }],
             [enbBorschik, {
                 source : '?.js',
                 target : '?.final.js',
                 freeze : true,
-                minify : isMinify
+                minify : isMinify,
             }],
             [enbBorschik, {
                 source : '?.bemhtml.js',
                 target : '?.bemhtml.final.js',
                 tech : 'js',
                 freeze : true,
-                minify : isMinify
+                minify : isMinify,
             }],
             [enbBorschik, {
                 source : '?.bemtree.js',
                 target : '?.bemtree.final.js',
                 tech : 'js',
                 freeze : true,
-                minify : isMinify
-            }]
+                minify : isMinify,
+            }],
         ];
     }
 };

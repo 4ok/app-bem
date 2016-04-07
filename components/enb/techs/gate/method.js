@@ -17,17 +17,17 @@ module.exports = buildFlow
     .builder(function build(filesPaths) {
         return this
             ._readFiles(filesPaths)
-            .then((data) => {
-                return this._getFormattedString([
+            .then(data =>
+                this._getFormattedString([
                     "'use strict';",
                     '',
                     'module.exports = function () {',
                     this._getMethods(),
                     '',
                     this._getResultFunctionBody(data),
-                    '}'
-                ], NEW_LINE);
-            });
+                    '}',
+                ], NEW_LINE)
+            );
     })
     .methods({
 
@@ -38,15 +38,14 @@ module.exports = buildFlow
 
             return this._getFormattedString([
                 content,
-                'return result;'
+                'return result;',
             ], NEW_LINE, TAB);
         },
 
         _getJoinedContents(data) {
-            return data.map(item => {
-                return item.content.trim();
-            })
-            .join(NEW_LINE.repeat(2));
+            return data
+                .map(item => item.content.trim())
+                .join(NEW_LINE.repeat(2));
         },
 
         _getFormattedString(rows, separator, afterSeparator) {
@@ -64,16 +63,14 @@ module.exports = buildFlow
         },
 
         _readFiles(filesPaths) {
-            return vow.all(filesPaths.map((file) => {
-                return asyncFs
+            return vow.all(filesPaths.map(file =>
+                asyncFs
                     .read(file.fullname, 'utf-8')
-                    .then(content => {
-                        return {
-                            block : this._getFileBlockName(file),
-                            content : content
-                        };
-                    });
-            }));
+                    .then(content => ({
+                        content,
+                        block : this._getFileBlockName(file),
+                    }))
+            ));
         },
 
         _getFileBlockName(file) {
@@ -129,6 +126,6 @@ module.exports = buildFlow
         return result;
     };
 `;
-        }
+        },
     })
     .createTech();
