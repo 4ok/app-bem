@@ -36,7 +36,8 @@ const rules = {
     },
 };
 
-const markdownBemjson = require('markdown-bemjson')({
+const MarkdownBemjson = require('markdown-bemjson');
+const markdownBemjson = new MarkdownBemjson({
     rules,
 });
 
