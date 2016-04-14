@@ -79,9 +79,11 @@ module.exports = class {
 
     addBemtreeContext(context) {
 
-        Object.keys(context).forEach(key => {
-            this._bemtreeContext[key] = context[key];
-        });
+        Object
+            .keys(context)
+            .forEach(key => {
+                this._bemtreeContext[key] = context[key];
+            });
     }
 
     getBemtree() {

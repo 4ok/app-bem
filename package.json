@@ -13,11 +13,13 @@
     "borschik-tech-cleancss": "^2.1.0",
     "config": "^1.19.0",
     "enb": "^1.2.0",
+    "enb-bem-babel": "0.0.4",
     "enb-bem-techs": "^2.2.1",
     "enb-bemxjst": "https://github.com/4ok/enb-bemxjst.git",
     "enb-borschik": "^2.3.1",
     "enb-bundle-postcss": "git+https://github.com/4ok/enb-bundle-postcss.git",
     "enb-js": "^1.1.0",
+    "enb-modules": "^0.2.0",
     "enb-stylus": "^2.3.0",
     "logger": "git+https://github.com/4ok/logger.git",
     "markdown-bemjson": "^3.0.0",
@@ -25,14 +27,15 @@
     "q": "^1.4.1",
     "qs": "^6.1.0",
     "underscore.string": "^3.3.4",
-    "vow": "^0.4.12"
-  },
-  "private": true,
-  "scripts": {
-    "test": "node_modules/.bin/eslint ."
+    "vow": "^0.4.12",
+    "ym": "^0.1.2"
   },
   "devDependencies": {
     "eslint": "^2.7.0",
     "eslint-config-4ok": "git://github.com/4ok/eslint-config-4ok"
-  }
+  },
+  "scripts": {
+    "lint": "node_modules/.bin/eslint ."
+  },
+  "private": true
 }
