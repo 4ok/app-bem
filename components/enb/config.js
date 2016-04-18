@@ -8,8 +8,8 @@ const enbFileProvide = require('enb/techs/file-provider');
 const enbBorschik = require('enb-borschik/techs/borschik');
 const enbStylus = require('enb-stylus/techs/stylus');
 const enbPostcss = require('enb-bundle-postcss/techs/enb-bundle-postcss');
-const enbBemBabel = require('enb-bem-babel/techs/bem-babel');
-const enbPrependModules = require('enb-modules/techs/prepend-modules');
+const enbBrowserJs = require('enb-js/techs/browser-js');
+const enbFileMerge = require('enb/techs/file-merge');
 
 // const enbBemtree = require('enb-bemxjst/techs/bemtree');
 // const enbBemhtml = require('enb-bemxjst/techs/bemhtml');
@@ -224,13 +224,15 @@ module.exports = class {
 
         if (FINAL_TECHS['browser-js']) {
             result = [
-                [enbBemBabel, {
-                    bemhtmlFile : '?.browser.bemhtml.js',
-                    target : '?.babel.js',
+                [enbBrowserJs, {
+                    includeYM : true,
                 }],
-                [enbPrependModules, {
-                    source : '?.babel.js',
-                    target : '?.browser.js',
+                [enbFileMerge, {
+                    target : '?.js',
+                    sources : [
+                        '?.browser.js',
+                        '?.browser.bemhtml.js',
+                    ],
                 }],
             ];
         }
