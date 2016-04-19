@@ -35,9 +35,9 @@ module.exports = class {
                     options.bundle,
                 ].join('/');
 
-                this._bemhtmlPath = pathProlog + '.bemhtml.final.js'; // TODO
-                this._bemtreePath = pathProlog + '.bemtree.final.js'; // TODO
-                this._gateMethodPath = pathProlog + '.gate.final.js'; // TODO
+                this._bemhtmlPath = pathProlog + '.bemhtml.min.js'; // TODO
+                this._bemtreePath = pathProlog + '.bemtree.min.js'; // TODO
+                this._gateMethodPath = pathProlog + '.gate.min.js'; // TODO
             }
         }
 
