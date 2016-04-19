@@ -8,7 +8,7 @@ const enbFileProvide = require('enb/techs/file-provider');
 const enbBorschik = require('enb-borschik/techs/borschik');
 const enbStylus = require('enb-stylus/techs/stylus');
 const enbPostcss = require('enb-bundle-postcss/techs/enb-bundle-postcss');
-const enbBabelifyBrowserJs = require('enb-babelify/techs/babel-browser-js');
+const enbBabelBrowserJs = require('enb-babelify/techs/babel-browser-js');
 const enbBrowserJs = require('enb-js/techs/browser-js');
 const enbFileMerge = require('enb/techs/file-merge');
 
@@ -256,7 +256,7 @@ module.exports = class {
                     ],
                     target : '?.browser.ym+bemhtml.js',
                 }],
-                [enbBabelifyBrowserJs, {
+                [enbBabelBrowserJs, {
                     sourceTarget : '?.browser.ym+bemhtml.js',
                     target : tech.target,
                     babelOptions : {
