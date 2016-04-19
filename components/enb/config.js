@@ -28,7 +28,7 @@ const autoprefixer = require('autoprefixer');
 // Final technologies
 const FINAL_TECHS = {
     'gate-method' : {
-        source : 'gate.js',
+        sourceSuffixes : 'gate.js',
         target : '?.gate.js',
         borschik : {
             target : '?.gate.min.js',
@@ -36,7 +36,7 @@ const FINAL_TECHS = {
         },
     },
     bemtree : {
-        source : 'bemtree.js',
+        sourceSuffixes : 'bemtree.js',
         target : '?.bemtree.js',
         borschik : {
             target : '?.bemtree.min.js',
@@ -44,7 +44,7 @@ const FINAL_TECHS = {
         },
     },
     bemhtml : {
-        sources : 'bemhtml.js',
+        sourceSuffixes : ['bemhtml.js', 'bemhtml'],
         target : '?.bemhtml.js',
         borschik : {
             target : '?.bemhtml.min.js',
@@ -52,7 +52,7 @@ const FINAL_TECHS = {
         },
     },
     'browser-js' : {
-        source : 'browser.js',
+        sourceSuffixes : ['js', 'vanilla.js', 'browser.js'],
         target : '?.browser.js',
         borschik : {
             target : '?.browser.min.js',
@@ -60,7 +60,7 @@ const FINAL_TECHS = {
         },
     },
     css : {
-        source : ['styl', 'css', 'post.css'],
+        sourceSuffixes : ['styl', 'css', 'post.css'],
         target : '?.css',
         borschik : {
             target : '?.min.css',
@@ -166,7 +166,7 @@ module.exports = class {
         if (tech) {
             result = [
                 [enbGateMethod, {
-                    source : tech.source,
+                    sourceSuffixes : tech.sourceSuffixes,
                     target : tech.target,
                 }],
             ];
@@ -182,7 +182,7 @@ module.exports = class {
         if (tech) {
             result = [
                 [enbBemtree, {
-                    source : tech.source,
+                    sourceSuffixes : tech.sourceSuffixes,
                     target : tech.target,
                 }],
             ];
@@ -198,7 +198,7 @@ module.exports = class {
         if (tech) {
             result = [
                 [enbBemhtml, {
-                    source : tech.source,
+                    sourceSuffixes : tech.sourceSuffixes,
                     target : tech.target,
                 }],
             ];
@@ -245,7 +245,7 @@ module.exports = class {
 
             result = [
                 [enbBrowserJs, {
-                    source : tech.source,
+                    sourceSuffixes : tech.sourceSuffixes,
                     target : '?.browser.ym.js',
                     includeYM : true,
                 }],
@@ -279,7 +279,7 @@ module.exports = class {
         if (tech) {
             result = [
                 [enbStylus, {
-                    source : tech.source,
+                    sourceSuffixes : tech.sourceSuffixes,
                     target : '?.pre.css',
                 }],
                 [enbPostcss, {
