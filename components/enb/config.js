@@ -8,6 +8,7 @@ const enbFileProvide = require('enb/techs/file-provider');
 const enbBorschik = require('enb-borschik/techs/borschik');
 const enbStylus = require('enb-stylus/techs/stylus');
 const enbPostcss = require('enb-bundle-postcss/techs/enb-bundle-postcss');
+const enbBabelifyBrowserJs = require('enb-babelify/techs/babel-browser-js');
 const enbBrowserJs = require('enb-js/techs/browser-js');
 const enbFileMerge = require('enb/techs/file-merge');
 
@@ -27,34 +28,43 @@ const autoprefixer = require('autoprefixer');
 // Final technologies
 const FINAL_TECHS = {
     'gate-method' : {
-        target : 'gate.final.js',
+        source : 'gate.js',
+        target : '?.gate.js',
+        borschik : {
+            target : '?.gate.min.js',
+            tech : 'js',
+        },
     },
     bemtree : {
         source : 'bemtree.js',
-        target : 'bemtree.final.js',
+        target : '?.bemtree.js',
         borschik : {
+            target : '?.bemtree.min.js',
             tech : 'js',
         },
     },
     bemhtml : {
-        source : 'bemhtml.js',
-        target : 'bemhtml.final.js',
+        sources : 'bemhtml.js',
+        target : '?.bemhtml.js',
         borschik : {
+            target : '?.bemhtml.min.js',
             tech : 'js',
-        },
-    },
-    css : {
-        source : 'css',
-        target : 'final.css',
-        borschik : {
-            tech : 'cleancss',
         },
     },
     'browser-js' : {
         source : 'browser.js',
-        target : 'final.browser.js',
+        target : '?.browser.js',
         borschik : {
+            target : '?.browser.min.js',
             tech : 'js',
+        },
+    },
+    css : {
+        source : ['styl', 'css', 'post.css'],
+        target : '?.css',
+        borschik : {
+            target : '?.min.css',
+            tech : 'cleancss',
         },
     },
 };
@@ -83,14 +93,44 @@ module.exports = class {
         });
     }
 
+    _getTechs(levels) {
+        return [].concat(
+            this._getFilesTechs(levels),
+            this._getGateMethodTechs(),
+            this._getBemtreeTechs(),
+            this._getServerBemhtmlTechs(),
+            this._getBrowserBemhtmlTechs(),
+            this._getCssTechs(),
+            this._getBrowserJsTechs(),
+            this._getOptimizationTechs()
+        );
+    }
+
+    _getTargets() {
+        return Object
+            .keys(FINAL_TECHS)
+            .reduce((result, key) => {
+                const tech = FINAL_TECHS[key];
+                const target = tech.borschik
+                    ? tech.borschik.target
+                    : tech.target;
+
+                result.push(target);
+
+                return result;
+            }, []);
+    }
+
     _addTasks() {
         Object
             .keys(FINAL_TECHS)
             .forEach(key => {
-                const requireTechParam = FINAL_TECHS[key];
-                const requireTech = requireTechParam.target;
+                const tech = FINAL_TECHS[key];
+                const target = tech.borschik
+                    ? tech.borschik.target
+                    : tech.target;
 
-                this._addTask(key, requireTech);
+                this._addTask(key, target.slice(2));
             });
     }
 
@@ -104,33 +144,6 @@ module.exports = class {
                 return path.join(node, fileName);
             }))
         );
-    }
-
-    _getTechs(levels) {
-        return [].concat(
-            this._getFilesTechs(levels),
-            this._getGateMethodTechs(),
-            this._getBemtreeTechs(),
-            this._getServerBemhtmlTechs(),
-            this._getClientBemhtmlTechs(),
-            this._getCssTechs(),
-            this._getBrowserJsTechs(),
-            this._getOptimizationTechs()
-        );
-    }
-
-    _getTargets() {
-        return Object
-            .keys(FINAL_TECHS)
-            .reduce((result, key) => {
-                const requireTechParam = FINAL_TECHS[key];
-                const requireTech = requireTechParam.target;
-                const target = '?.' + requireTech;
-
-                result.push(target);
-
-                return result;
-            }, []);
     }
 
     _getFilesTechs(levels) {
@@ -147,12 +160,14 @@ module.exports = class {
     }
 
     _getGateMethodTechs() {
+        const tech = FINAL_TECHS['gate-method'];
         let result = [];
 
-        if (FINAL_TECHS['gate-method']) {
+        if (tech) {
             result = [
                 [enbGateMethod, {
-                    target : '?.gate.final.js',
+                    source : tech.source,
+                    target : tech.target,
                 }],
             ];
         }
@@ -161,13 +176,14 @@ module.exports = class {
     }
 
     _getBemtreeTechs() {
+        const tech = FINAL_TECHS.bemtree;
         let result = [];
 
-        if (FINAL_TECHS.bemtree) {
+        if (tech) {
             result = [
                 [enbBemtree, {
-                    devMode : false,
-                    includeVow : false,
+                    source : tech.source,
+                    target : tech.target,
                 }],
             ];
         }
@@ -176,12 +192,14 @@ module.exports = class {
     }
 
     _getServerBemhtmlTechs() {
+        const tech = FINAL_TECHS.bemhtml;
         let result = [];
 
-        if (FINAL_TECHS.bemhtml) {
+        if (tech) {
             result = [
                 [enbBemhtml, {
-                    sourceSuffixes : ['bemhtml', 'bemhtml.js'],
+                    source : tech.source,
+                    target : tech.target,
                 }],
             ];
         }
@@ -189,7 +207,7 @@ module.exports = class {
         return result;
     }
 
-    _getClientBemhtmlTechs() {
+    _getBrowserBemhtmlTechs() {
         let result = [];
 
         if (FINAL_TECHS['browser-js']) {
@@ -220,19 +238,33 @@ module.exports = class {
     }
 
     _getBrowserJsTechs() {
+        const tech = FINAL_TECHS['browser-js'];
         let result = [];
 
-        if (FINAL_TECHS['browser-js']) {
+        if (tech) {
+
             result = [
                 [enbBrowserJs, {
+                    source : tech.source,
+                    target : '?.browser.ym.js',
                     includeYM : true,
                 }],
                 [enbFileMerge, {
-                    target : '?.js',
                     sources : [
-                        '?.browser.js',
+                        '?.browser.ym.js',
                         '?.browser.bemhtml.js',
                     ],
+                    target : '?.browser.ym+bemhtml.js',
+                }],
+                [enbBabelifyBrowserJs, {
+                    sourceTarget : '?.browser.ym+bemhtml.js',
+                    target : tech.target,
+                    babelOptions : {
+                        compact : false,
+                        presets : [
+                            'es2015',
+                        ],
+                    },
                 }],
             ];
         }
@@ -241,17 +273,18 @@ module.exports = class {
     }
 
     _getCssTechs() {
+        const tech = FINAL_TECHS.css;
         let result = [];
 
-        if (FINAL_TECHS.css) {
+        if (tech) {
             result = [
                 [enbStylus, {
-                    sourceSuffixes : ['styl', 'css', 'post.css'],
-                    target : '?.post.css',
+                    source : tech.source,
+                    target : '?.pre.css',
                 }],
                 [enbPostcss, {
-                    source : '?.post.css',
-                    target : '?.css',
+                    source : '?.pre.css',
+                    target : tech.target,
                     sourcemap : this._isSourcemap,
                     plugins : this._getPostcssPlugins(),
                 }],
@@ -298,12 +331,10 @@ module.exports = class {
                 const tech = FINAL_TECHS[key];
 
                 if (tech.borschik) {
-                    const item = Object.assign({
-                        source : '?.' + tech.source,
-                        target : '?.' + tech.target,
-                        freeze : true,
+                    const item = Object.assign({}, tech.borschik, {
+                        source : tech.target,
                         minify : this._isMinify,
-                    }, tech.borschik);
+                    });
 
                     result.push([enbBorschik, item]);
                 }
