@@ -6,7 +6,7 @@ const string = require('underscore.string');
 const crypto = require('crypto');
 
 // TODO
-const bundleDir = '/Users/lipolyakov/development/projects/trusha/application/bem/bundles/index';
+const bundleDir = '../../../bem/bundles/index';
 const bemhtml = require(bundleDir + '/index.bemhtml.min.js').BEMHTML;
 
 const METHODS_CACHE = {};
