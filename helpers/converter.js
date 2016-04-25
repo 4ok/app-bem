@@ -86,7 +86,7 @@ module.exports = class extends Helper {
     }
 
     _cache(name, args, fn) {
-        const hash = this._getMethodParamsHash(name, args);
+        const hash = this._getMethodHash(name, args);
 
         if (!METHODS_CACHE[hash]) {
             METHODS_CACHE[hash] = fn();
@@ -95,17 +95,14 @@ module.exports = class extends Helper {
         return METHODS_CACHE[hash];
     }
 
-    _getMethodParamsHash(method, args) {
-        const params = Array.prototype
-            .slice
-            .call(args, '|')
-            .concat(method);
-
-        const str = JSON.stringify(params);
+    _getMethodHash(methodName, methodArgs) {
+        const argsArr = [].slice.call(methodArgs);
+        const params = [methodName].concat(argsArr);
+        const paramsStr = JSON.stringify(params);
 
         return crypto
             .createHash('sha256')
-            .update(str)
+            .update(paramsStr)
             .digest('hex');
     }
 };
