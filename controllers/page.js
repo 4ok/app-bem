@@ -26,33 +26,61 @@ module.exports = class extends Controller {
     indexAction() {
         logger.profile(LOGGER_PROFILE_SEND_RESPONSE);
 
-        // TODO
-        if (this._param.route('article_alias_chain')) {
-            this
-                ._aaa()
-                .then(this._showPage.bind(this))
-                .fail(this._onError.bind(this))
-                .done();
-        } else {
-            this
-                ._showPage()
-                .fail(this._onError.bind(this))
-                .done();
+        const routeName = this._request.getParam('route').name;
+        let result;
+
+        switch (routeName) {
+            case 'article' : {
+                const articleAliasChain = this._param.route('article_alias_chain');
+
+                if (articleAliasChain) {
+                    result = this._setRequestParamByGateResult(
+                        'route.params.article_id',
+                        '_id',
+                        'data:article',
+                        {
+                            filter : {
+                                alias : {
+                                    '#chain' : articleAliasChain,
+                                },
+                            },
+                        }
+                    );
+                }
+                break;
+            }
         }
+
+        result = (result)
+            ? result.then(this._logRequestParams.bind(this))
+            : this._logRequestParams();
+
+        result
+            .then(this._showPage.bind(this))
+            .fail(this._onError.bind(this))
+            .done();
     }
 
-    _aaa() { // TODO
-        const articleAliasChain = this._param.route('article_alias_chain');
+    _logRequestParams() {
+        const request = this._request;
+        const routeParamsWithoutObjectId = JSON.parse(
+            JSON.stringify(request.getParam('route.params'))
+        );
+
+        logger
+            .break()
+            .info('Request uri: %s', request.url.path)
+            .info('Route name:', request.getParam('route.name'))
+            .info('Route params:', routeParamsWithoutObjectId)
+            .info('Query params:', request.getParam('query') || '')
+            .info('Post params:', request.getParam('body') || '');
+    }
+
+    _setRequestParamByGateResult(requestKey, resultKey, methodName, methodParams) {
 
         return this._gate
-            .callMethod('data:article', {
-                filter : {
-                    alias : {
-                        '#chain' : articleAliasChain,
-                    },
-                },
-            })
-            .then(page => this._request.setParam('route.params.article_id', page._id));
+            .callMethod(methodName, methodParams)
+            .then(result => this._request.setParam(requestKey, result[resultKey]));
     }
 
     _showPage() {
