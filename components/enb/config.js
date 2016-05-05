@@ -11,12 +11,8 @@ const enbPostcss = require('enb-bundle-postcss/techs/enb-bundle-postcss');
 const enbBabelBrowserJs = require('enb-babelify/techs/babel-browser-js');
 const enbBrowserJs = require('enb-js/techs/browser-js');
 const enbFileMerge = require('enb/techs/file-merge');
-
-// const enbBemtree = require('enb-bemxjst/techs/bemtree');
-// const enbBemhtml = require('enb-bemxjst/techs/bemhtml');
-const enbBemtree = require('app-bem/components/enb/enb-bemxjst/techs/bemtree'); // TODO: https://github.com/enb/enb-bemxjst/issues/139
-const enbBemhtml = require('app-bem/components/enb/enb-bemxjst/techs/bemhtml'); // TODO: https://github.com/enb/enb-bemxjst/issues/139
-
+const enbBemtree = require('enb-bemxjst/techs/bemtree');
+const enbBemhtml = require('enb-bemxjst/techs/bemhtml');
 const enbGateMethod = require('app-bem/components/enb/techs/gate-method');
 
 // Postcss plugins
