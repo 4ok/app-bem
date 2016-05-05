@@ -2,7 +2,6 @@
 
 const Helper = require('app-core/components/helper/abstract');
 const string = require('underscore.string');
-
 const crypto = require('crypto');
 
 // TODO

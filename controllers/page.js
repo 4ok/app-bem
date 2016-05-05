@@ -49,13 +49,13 @@ module.exports = class extends Controller {
                 }
                 break;
             }
+            default: {
+                result = q();
+            }
         }
 
-        result = (result)
-            ? result.then(this._logRequestParams.bind(this))
-            : this._logRequestParams();
-
         result
+            .then(this._logRequestParams.bind(this))
             .then(this._showPage.bind(this))
             .fail(this._onError.bind(this))
             .done();
