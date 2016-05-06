@@ -1,21 +1,13 @@
 'use strict';
 
 const fs = require('fs');
-const vm = require('vm');
-const Vow = require('vow');
 const enb = require('enb');
 
 module.exports = class {
 
     constructor(options) {
-        this._bemtreeContext = {
-            console,
-            global,
-            require,
-            Vow,
-        };
 
-        if (undefined !== options.root) {
+        if (options.root !== undefined) {
 
             if (!fs.existsSync(options.root)) {
                 throw new Error('Root dir "' + options.root + '" is not exists');
@@ -27,7 +19,7 @@ module.exports = class {
                 level = options.level + '.' + level;
             }
 
-            if (undefined !== options.bundle) {
+            if (options.bundle !== undefined) {
                 const pathProlog = [
                     options.root,
                     level,
@@ -41,7 +33,7 @@ module.exports = class {
             }
         }
 
-        if (undefined === options.cache) {
+        if (options.cache === undefined) {
             options.cache = true;
         }
     }
@@ -77,29 +69,17 @@ module.exports = class {
         return content;
     }
 
-    addBemtreeContext(context) {
-
-        Object
-            .keys(context)
-            .forEach(key => {
-                this._bemtreeContext[key] = context[key];
-            });
-    }
-
+    // TODO: get
     getBemtree() {
 
         if (!this._bemtree) {
-            const content = fs.readFileSync(this._bemtreePath, 'utf-8');
-            const context = this._bemtreeContext;
-
-            vm.runInNewContext(content, context);
-
-            this._bemtree = context.BEMTREE;
+            this._bemtree = require(this._bemtreePath).BEMTREE;
         }
 
         return this._bemtree;
     }
 
+    // TODO: get
     getBemhtml() {
 
         if (!this._bemhtml) {
@@ -109,6 +89,7 @@ module.exports = class {
         return this._bemhtml;
     }
 
+    // TODO: get
     getGateMethod() {
 
         if (!this._gateMethod) {

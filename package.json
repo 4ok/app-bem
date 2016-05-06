@@ -11,10 +11,7 @@
     "config": "^1.20.1",
     "logger": "git+https://github.com/4ok/logger.git",
     "markdown-bemjson": "^3.0.2",
-    "q": "^1.4.1",
-    "qs": "^6.1.0",
     "underscore.string": "^3.3.4",
-    "vow": "^0.4.12",
     "ym": "^0.1.2"
   },
   "devDependencies": {

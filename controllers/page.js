@@ -1,6 +1,5 @@
 'use strict';
 
-const q = require('q');
 const logger = require('logger')();
 const config = require('config');
 const Bundle = require('../components/bundle');
@@ -50,15 +49,15 @@ module.exports = class extends Controller {
                 break;
             }
             default: {
-                result = q();
+                // TODO: resolved promise
+                result = new Promise(resolve => resolve());
             }
         }
 
         result
             .then(this._logRequestParams.bind(this))
             .then(this._showPage.bind(this))
-            .fail(this._onError.bind(this))
-            .done();
+            .catch(this._onError.bind(this));
     }
 
     _logRequestParams() {
@@ -77,7 +76,6 @@ module.exports = class extends Controller {
     }
 
     _setRequestParamByGateResult(requestKey, resultKey, methodName, methodParams) {
-
         return this._gate
             .callMethod(methodName, methodParams)
             .then(result => this._request.setParam(requestKey, result[resultKey]));
@@ -105,7 +103,7 @@ module.exports = class extends Controller {
         const blocks = Object.keys(methods);
         const promises = blocks.map(block => this._gate.callMethod(methods[block]));
 
-        return q
+        return Promise
             .all(promises)
             .then(data => {
                 const output = this._param.query('__output', 'html');

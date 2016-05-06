@@ -3,7 +3,6 @@
 const enb = require('enb');
 const buildFlow = enb.buildFlow;
 const asyncFs = enb.asyncFs;
-const vow = require('vow');
 
 const NEW_LINE = '\n';
 const TAB = ' '.repeat(4);
@@ -63,7 +62,7 @@ module.exports = buildFlow
         },
 
         _readFiles(filesPaths) {
-            return vow.all(filesPaths.map(file =>
+            return Promise.all(filesPaths.map(file =>
                 asyncFs
                     .read(file.fullname, 'utf-8')
                     .then(content => ({
