@@ -19,7 +19,6 @@ const enbGateMethod = require('app-bem/components/enb/techs/gate-method');
 const postcssSimpleVars = require('postcss-simple-vars');
 const postcssFontpath = require('postcss-fontpath');
 const postcssBemGrid = require('bem-grid').postcss;
-const autoprefixer = require('autoprefixer');
 
 // Final technologies
 const FINAL_TECHS = {
@@ -305,14 +304,6 @@ module.exports = class {
                     maxWidth : '1100px',
                     gutter : '10px',
                     flex : 'flex',
-                }),
-                autoprefixer({
-                    browsers : [
-                        'ie >= 10',
-                        'last 2 versions',
-                        'opera 12.1',
-                        '> 2%',
-                    ],
                 }),
             ];
         }
