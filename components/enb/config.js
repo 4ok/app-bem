@@ -17,10 +17,10 @@ const enbGateMethod = require('app-bem/components/enb/techs/gate-method');
 
 // Postcss plugins
 const postcss = {
-    simpleVars: require('postcss-simple-vars'),
-    fontpath: require('postcss-fontpath'),
-    cssnext: require('postcss-cssnext'),
-    bemGrid: require('bem-grid').postcss,
+    simpleVars : require('postcss-simple-vars'),
+    fontpath : require('postcss-fontpath'),
+    cssnext : require('postcss-cssnext'),
+    bemGrid : require('bem-grid').postcss,
 };
 
 // Final technologies
@@ -305,7 +305,7 @@ module.exports = class {
                 postcss.fontpath,
                 postcss.cssnext,
                 postcss.bemGrid({
-                    maxWidth : '1100px',
+                    maxWidth : '1400px',
                     gutter : '10px',
                     flex : 'flex',
                 }),
