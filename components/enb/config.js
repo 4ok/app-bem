@@ -16,9 +16,12 @@ const enbBemhtml = require('enb-bemxjst/techs/bemhtml');
 const enbGateMethod = require('app-bem/components/enb/techs/gate-method');
 
 // Postcss plugins
-const postcssSimpleVars = require('postcss-simple-vars');
-const postcssFontpath = require('postcss-fontpath');
-const postcssBemGrid = require('bem-grid').postcss;
+const postcss = {
+    simpleVars: require('postcss-simple-vars'),
+    fontpath: require('postcss-fontpath'),
+    cssnext: require('postcss-cssnext'),
+    bemGrid: require('bem-grid').postcss,
+};
 
 // Final technologies
 const FINAL_TECHS = {
@@ -294,13 +297,14 @@ module.exports = class {
 
         if (FINAL_TECHS.css) {
             result = [
-                postcssSimpleVars({
+                postcss.simpleVars({
                     variables : {
                         fontsDir : '../../blocks/font',
                     },
                 }),
-                postcssFontpath,
-                postcssBemGrid({
+                postcss.fontpath,
+                postcss.cssnext,
+                postcss.bemGrid({
                     maxWidth : '1100px',
                     gutter : '10px',
                     flex : 'flex',
