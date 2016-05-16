@@ -306,7 +306,7 @@ module.exports = class {
                 postcss.cssnext,
                 postcss.bemGrid({
                     maxWidth : '1400px',
-                    gutter : '10px',
+                    gutter : '1rem',
                     flex : 'flex',
                 }),
             ];
