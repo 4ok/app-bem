@@ -20,7 +20,7 @@ const postcss = {
     simpleVars : require('postcss-simple-vars'),
     fontpath : require('postcss-fontpath'),
     cssnext : require('postcss-cssnext'),
-    bemGrid : require('bem-grid').postcss,
+    sharps : require('sharps').postcss,
 };
 
 // Final technologies
@@ -304,7 +304,8 @@ module.exports = class {
                 }),
                 postcss.fontpath,
                 postcss.cssnext,
-                postcss.bemGrid({
+                postcss.sharps({
+                    columns : 12,
                     maxWidth : '1400px',
                     gutter : '1rem',
                     flex : 'flex',
