@@ -1,6 +1,5 @@
-'use strict';
-
 const fs = require('fs');
+// eslint-disable-next-line import/no-unresolved
 const enb = require('enb');
 
 module.exports = class {
@@ -73,6 +72,7 @@ module.exports = class {
     getBemtree() {
 
         if (!this._bemtree) {
+            // eslint-disable-next-line global-require
             this._bemtree = require(this._bemtreePath).BEMTREE;
         }
 
@@ -83,6 +83,7 @@ module.exports = class {
     getBemhtml() {
 
         if (!this._bemhtml) {
+            // eslint-disable-next-line global-require
             this._bemhtml = require(this._bemhtmlPath).BEMHTML;
         }
 
@@ -93,6 +94,7 @@ module.exports = class {
     getGateMethod() {
 
         if (!this._gateMethod) {
+            // eslint-disable-next-line global-require
             this._gateMethod = require(this._gateMethodPath);
         }
 

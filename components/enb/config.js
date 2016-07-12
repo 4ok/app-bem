@@ -1,7 +1,6 @@
-'use strict';
-
 const path = require('path');
 
+/* eslint-disable import/no-unresolved */
 // Enb technologies
 const enbBaseTechs = require('enb-bem-techs');
 const enbFileProvide = require('enb/techs/file-provider');
@@ -14,7 +13,9 @@ const enbFileMerge = require('enb/techs/file-merge');
 const enbBemtree = require('enb-bemxjst/techs/bemtree');
 const enbBemhtml = require('enb-bemxjst/techs/bemhtml');
 const enbGateMethod = require('app-bem/components/enb/techs/gate-method');
+/* eslint-enable import/no-unresolved */
 
+/* eslint-disable global-require, import/no-unresolved */
 // Postcss plugins
 const postcss = {
     simpleVars : require('postcss-simple-vars'),
@@ -22,6 +23,7 @@ const postcss = {
     cssnext : require('postcss-cssnext'),
     sharps : require('sharps').postcss,
 };
+/* eslint-enable global-require */
 
 // Final technologies
 const FINAL_TECHS = {
