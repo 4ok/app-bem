@@ -18,7 +18,7 @@ const enbGateMethod = require('app-bem/components/enb/techs/gate-method');
 /* eslint-disable global-require, import/no-unresolved */
 // Postcss plugins
 const postcss = {
-    importUrl: require('postcss-import-url'),
+    import: require('postcss-import'),
     cssnext : require('postcss-cssnext'),
     sharps : require('sharps').postcss,
 };
@@ -299,7 +299,7 @@ module.exports = class {
 
         if (FINAL_TECHS.css) {
             result = [
-                postcss.importUrl,
+                postcss.import,
                 postcss.cssnext,
                 postcss.sharps({
                     columns : 12,
