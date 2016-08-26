@@ -6,6 +6,12 @@ export NODE_ENV ?= development
 export BEMTREE_ENV := NODE_ENV
 export BEMHTML_ENV := NODE_ENV
 
+# Project name
+#PROJECT_NAME = unknown
+
+# Node path
+NODE_BIN_PATH := /usr/bin /usr/local/bin
+
 # Line separator
 LINE_BREAK := $(shell printf '*%.0s' {1..90})
 
