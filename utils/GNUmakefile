@@ -1,8 +1,3 @@
-### PROJECT
-### ========
-
-PROJECT_NAME = site-stub
-
 ### SETTINGS
 ### ========
 
@@ -17,17 +12,8 @@ LINE_BREAK := $(shell printf '*%.0s' {1..90})
 # Project root path
 ROOT_PATH := $(PWD)
 
-# Node path
-NODE_BIN_PATH := /usr/bin /usr/local/bin
-
 # Node bin
 NODE := $(shell find $(NODE_BIN_PATH) -name node \( -type f -or -type l \))
-
-# Npm bin
-NPM := $(shell find $(NODE_BIN_PATH) -name npm \( -type f -or -type l \))
-
-# Bower bin
-BOWER := $(shell find $(NODE_BIN_PATH) -name bower \( -type f -or -type l \))
 
 # Configs path
 CONFIGS_PATH := $(ROOT_PATH)/configs
@@ -48,7 +34,7 @@ BEM_PATH := $(ROOT_PATH)/bem
 BEM_BUNDLES_PATH := $(BEM_PATH)/bundles
 
 # Bower modules path
-BOWER_MODULES_PATH := $(ROOT_PATH)/bower_modules
+BOWER_MODULES_PATH := $(BEM_PATH)/libs
 
 # Static path
 STATIC_PATH := $(ROOT_PATH)/public/static
@@ -65,48 +51,18 @@ export NODE_CONFIG_DIR := $(CONFIGS_PATH)/app
 # Print break line
 $(info $(LINE_BREAK))
 
-### INSTALL
+### UNINSTALL
 ### =======
-
-# Install npm, bower packages
-.PHONY: install
-install: npm.install bower.install
 
 # Uninstall npm, bower packages
 .PHONY: uninstall
 uninstall: npm.delete bower.delete
-
-# Install npm packages
-.PHONY: npm.install
-npm.install: npm.prune
-	@echo '===> Installing npm packages'
-	$(NPM) cache clean
-	$(NPM) install
-
-# Prune npm packages
-.PHONY: npm.prune
-npm.prune:
-	@echo '===> Pruning npm packages'
-	$(NPM) prune
 
 # Delete npm packages
 .PHONY: npm.delete
 npm.delete:
 	@echo '===> Removing npm packages'
 	rm -rf $(NODE_MODULES_PATH)
-
-# Install bower packages
-.PHONY: bower.install
-bower.install: bower.prune
-	@echo '===> Installing bower packages'
-	$(BOWER) cache clean
-	$(BOWER) install --force-latest
-
-# Prune bower packages
-.PHONY: bower.prune
-bower.prune:
-	@echo '===> Pruning bower packages'
-	$(BOWER) prune
 
 # Delete bower packages
 .PHONY: bower.delete
