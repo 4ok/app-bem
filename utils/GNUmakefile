@@ -175,7 +175,7 @@ lint: lint.stylus lint.js
 .PHONY: lint.stylus
 lint.stylus:
 	@echo '===> Linting stylus files'
-	$(NODE_MODULES_BIN_PATH)/.bin/stylint --config .configrc bem/blocks/
+	$(NODE_MODULES_BIN_PATH)/.bin/stylint --config $(NODE_MODULES_PATH)/stylint-config-4ok/.configrc $(BEM_PATH)/blocks/
 
 .PHONY: lint.js
 lint.js:
