@@ -164,3 +164,22 @@ process.show:
 logs.show:
 	@echo '===> Logs'
 	$(PROCESS_MANAGER) logs $(PROJECT_NAME)
+
+### LINT
+### =======
+
+# Lint stylus, js files
+.PHONY: lint
+lint: lint.stylus lint.js
+
+.PHONY: lint.stylus
+lint.stylus:
+	@echo '===> Linting stylus files'
+	node_modules/.bin/stylint --config .configrc bem/blocks/
+
+.PHONY: lint.js
+lint.js:
+	@echo '===> Linting js files'
+	node_modules/.bin/eslint .
+
+-include node_modules/app-bem/utils/GNUmakefile
