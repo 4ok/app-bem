@@ -29,7 +29,7 @@ module.exports = buildFlow
     })
     .methods({
 
-        _getResultFunctionBody(data) {
+        _getResultFunctionBody : function _getResultFunctionBody(data) {
             const content = this
                 ._getJoinedContents(data)
                 .replace(/^/gm, TAB);
@@ -40,13 +40,13 @@ module.exports = buildFlow
             ], NEW_LINE, TAB);
         },
 
-        _getJoinedContents(data) {
+        _getJoinedContents : function _getJoinedContents(data) {
             return data
                 .map(item => item.content.trim())
                 .join(NEW_LINE.repeat(2));
         },
 
-        _getFormattedString(rows, separator, afterSeparator) {
+        _getFormattedString : function _getFormattedString(rows, separator, afterSeparator) {
             let result;
 
             if (separator) {
@@ -60,7 +60,7 @@ module.exports = buildFlow
             return result;
         },
 
-        _readFiles(filesPaths) {
+        _readFiles : function _readFiles(filesPaths) {
             return Promise.all(filesPaths.map(file =>
                 asyncFs
                     .read(file.fullname, 'utf-8')
@@ -71,7 +71,7 @@ module.exports = buildFlow
             ));
         },
 
-        _getFileBlockName(file) {
+        _getFileBlockName : function _getFileBlockName(file) {
             let result = file.name.split('.')[0];
 
             if (/[^\w\d_]/.test(result)) {
@@ -82,7 +82,7 @@ module.exports = buildFlow
         },
 
         // TODO
-        _getMethods() {
+        _getMethods : function _getMethods() {
             return `
     const result = {};
     let blockName;

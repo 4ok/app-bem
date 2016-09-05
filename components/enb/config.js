@@ -18,7 +18,7 @@ const enbGateMethod = require('app-bem/components/enb/techs/gate-method');
 /* eslint-disable global-require, import/no-unresolved */
 // Postcss plugins
 const postcss = {
-    import: require('postcss-import'),
+    import : require('postcss-import'),
     cssnext : require('postcss-cssnext'),
     sharps : require('sharps').postcss,
 };
