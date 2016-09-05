@@ -40,7 +40,7 @@ BEM_PATH := $(ROOT_PATH)/bem
 BEM_BUNDLES_PATH := $(BEM_PATH)/bundles
 
 # Bower modules path
-BOWER_MODULES_PATH := $(BEM_PATH)/libs
+BOWER_MODULES_PATH := $(ROOT_PATH)/bower_modules
 
 # Static path
 STATIC_PATH := $(ROOT_PATH)/public/static
