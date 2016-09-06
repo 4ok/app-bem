@@ -1,6 +1,4 @@
 const fs = require('fs');
-// eslint-disable-next-line import/no-unresolved
-const enb = require('enb');
 
 module.exports = class {
 
@@ -35,10 +33,6 @@ module.exports = class {
         if (options.cache === undefined) {
             options.cache = true;
         }
-    }
-
-    make() {
-        return enb.make();
     }
 
     render(data, output) {
