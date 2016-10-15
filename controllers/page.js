@@ -26,10 +26,12 @@ module.exports = class extends Controller {
         const routeName = this._request.getParam('route').name;
         let result;
 
+        // TODO
         switch (routeName) {
             case 'article' : {
                 const articleAliasChain = this._param.route('article_alias_chain');
 
+                // TODO: delete if
                 if (articleAliasChain) {
                     result = this._setRequestParamByGateResult(
                         'route.params.article_id',
@@ -46,9 +48,21 @@ module.exports = class extends Controller {
                 }
                 break;
             }
+            case 'catalog-category' : {
+                result = this._setRequestParamByGateResult(
+                    'route.params.item_id',
+                    '_id',
+                    'data:catalog',
+                    {
+                        filter : {
+                            alias : this._param.route('category_alias')
+                        },
+                    }
+                );
+                break;
+            }
             default: {
-                // TODO: resolved promise
-                result = new Promise(resolve => resolve());
+                result = Promise.resolve();
             }
         }
 

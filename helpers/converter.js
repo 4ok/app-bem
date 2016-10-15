@@ -36,7 +36,6 @@ const rules = {
 const MarkdownBemjson = require('markdown-bemjson');
 const markdownBemjson = new MarkdownBemjson({
     rules,
-    wrapper : false,
 });
 
 module.exports = class extends Helper {
