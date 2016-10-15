@@ -26,7 +26,6 @@ module.exports = class {
 
                 this._bemhtmlPath = pathProlog + '.bemhtml.min.js'; // TODO
                 this._bemtreePath = pathProlog + '.bemtree.min.js'; // TODO
-                this._gateMethodPath = pathProlog + '.gate.min.js'; // TODO
             }
         }
 
@@ -82,16 +81,5 @@ module.exports = class {
         }
 
         return this._bemhtml;
-    }
-
-    // TODO: get
-    getGateMethod() {
-
-        if (!this._gateMethod) {
-            // eslint-disable-next-line global-require
-            this._gateMethod = require(this._gateMethodPath);
-        }
-
-        return this._gateMethod;
     }
 };

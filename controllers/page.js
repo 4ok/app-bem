@@ -1,16 +1,16 @@
+const fs = require('fs');
 const logger = require('logger')();
 const config = require('config');
 const Bundle = require('../components/bundle');
 const Gate = require('app-gate');
 const HelperFactory = require('app-core/components/helper/factory');
-const MethodContext = require('app-core/components/gate/method-context');
 const Controller = require('app-core/components/controller');
 
 const LOGGER_PROFILE_SEND_RESPONSE = 'Send response';
 
 module.exports = class extends Controller {
 
-    constructor(http) {
+    constructor(http, gateMethodsDir) {
         super(http);
 
         this._helperFactory = new HelperFactory(http, [
@@ -18,6 +18,7 @@ module.exports = class extends Controller {
             'app-core/helpers',
         ]);
         this._gate = new Gate();
+        this._gateMethodsDir = gateMethodsDir;
     }
 
     indexAction() {
@@ -66,6 +67,8 @@ module.exports = class extends Controller {
             }
         }
 
+        result = Promise.resolve();
+
         result
             .then(this._logRequestParams.bind(this))
             .then(this._showPage.bind(this))
@@ -94,14 +97,40 @@ module.exports = class extends Controller {
     }
 
     _showPage() {
-        return this._render('index', { // TODO index
-            block : 'index',
-            bemtree : {
-                helper : this._helperFactory.getHelper.bind(this._helperFactory),
-                data : {},
-            },
-            context : this._param.route('context'),
-        });
+        return this._getBundleData()
+            .then(data => {
+                data = data || {};
+
+                return this._render('index', { // TODO index
+                    block : 'index',
+                    bemtree : {
+                        helper : this._helperFactory.getHelper.bind(this._helperFactory),
+                        data,
+                    },
+                    context : this._param.route('context'),
+                })
+            });
+    }
+
+    _getBundleData() {
+        const methods = this._getPageGateMethods();
+
+        return methods
+            ? this._gate.callMethod(methods)
+            : Promise.resolve();
+    }
+
+    _getPageGateMethods() {
+        const pageAlias = this._param.route('page_alias');
+        const methodsPath = this._gateMethodsDir + '/' + pageAlias + '.js'; // TODO: cache
+        let result;
+
+        if (fs.existsSync(methodsPath)) {
+            const methods = require(methodsPath);
+            result = methods(this);
+        }
+
+        return result;
     }
 
     _render(bundleName, bundleData) { // TODO
@@ -109,24 +138,10 @@ module.exports = class extends Controller {
             root : config.rootPath + '/bem', // TODO
             bundle : bundleName,
         });
-        const context = new MethodContext(this._param);
-        const methods = bundle.getGateMethod().call(context);
+        const output = this._param.query('__output', 'html');
+        const content = bundle.render(bundleData, output);
 
-        const blocks = Object.keys(methods);
-        const promises = blocks.map(block => this._gate.callMethod(methods[block]));
-
-        return Promise
-            .all(promises)
-            .then(data => {
-                const output = this._param.query('__output', 'html');
-
-                blocks.forEach((block, index) => {
-                    bundleData.bemtree.data[block] = data[index];
-                });
-
-                return bundle.render(bundleData, output);
-            })
-            .then(this._sendHtmlResponse.bind(this));
+        return this._sendHtmlResponse(content);
     }
 
     _sendHtmlResponse(content) {
