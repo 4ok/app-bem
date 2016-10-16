@@ -51,7 +51,7 @@ module.exports = class extends Controller {
             }
             case 'catalog-category' : {
                 result = this._setRequestParamByGateResult(
-                    'route.params.item_id',
+                    'route.params.category_id', // TODO
                     '_id',
                     'data:catalog',
                     {
@@ -62,12 +62,35 @@ module.exports = class extends Controller {
                 );
                 break;
             }
+            case 'catalog-product' : {
+                result = Promise.all([
+                    this._setRequestParamByGateResult(
+                        'route.params.category_id', // TODO
+                        '_id',
+                        'data:catalog',
+                        {
+                            filter : {
+                                alias : this._param.route('category_alias')
+                            },
+                        }
+                    ),
+                    this._setRequestParamByGateResult(
+                        'route.params.product_id',
+                        '_id',
+                        'data:catalog',
+                        {
+                            filter : {
+                                alias : this._param.route('product_alias')
+                            },
+                        }
+                    ),
+                ]);
+                break;
+            }
             default: {
                 result = Promise.resolve();
             }
         }
-
-        result = Promise.resolve();
 
         result
             .then(this._logRequestParams.bind(this))
