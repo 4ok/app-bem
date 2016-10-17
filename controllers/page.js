@@ -63,7 +63,7 @@ module.exports = class extends Controller {
                 break;
             }
             case 'catalog-product' : {
-                result = Promise.all([
+                const all = [
                     this._setRequestParamByGateResult(
                         'route.params.category_id', // TODO
                         '_id',
@@ -75,6 +75,19 @@ module.exports = class extends Controller {
                         }
                     ),
                     this._setRequestParamByGateResult(
+                        'route.params.subcategory_id',
+                        '_id',
+                        'data:catalog',
+                        {
+                            filter : {
+                                alias : this._param.route('subcategory_alias')
+                            },
+                        }
+                    ),
+                ];
+
+                if (this._param.route('product_alias')) {
+                    all.push(this._setRequestParamByGateResult(
                         'route.params.product_id',
                         '_id',
                         'data:catalog',
@@ -83,8 +96,23 @@ module.exports = class extends Controller {
                                 alias : this._param.route('product_alias')
                             },
                         }
-                    ),
-                ]);
+                    ));
+                } else {
+                    all.push(this._setRequestParamByGateResult(
+                        'route.params.product_id',
+                        '_id',
+                        'data:catalog',
+                        {
+                            filter : {
+                                '#parent' : {
+                                    alias : this._param.route('subcategory_alias'),
+                                },
+                            },
+                        }
+                    ));
+                }
+
+                result = Promise.all(all);
                 break;
             }
             default: {
@@ -145,15 +173,20 @@ module.exports = class extends Controller {
 
     _getPageGateMethods() {
         const pageAlias = this._param.route('page_alias');
-        const methodsPath = this._gateMethodsDir + '/' + pageAlias + '.js'; // TODO: cache
-        let result;
+        const methodsPaths = [
+            this._gateMethodsDir + '/' + pageAlias + '.js',
+            this._gateMethodsDir + '/common.js'
+        ];
 
-        if (fs.existsSync(methodsPath)) {
-            const methods = require(methodsPath);
-            result = methods(this);
-        }
+        return methodsPaths.reduce((result, methodsPath) => {
 
-        return result;
+            if (fs.existsSync(methodsPath)) {
+                const methods = require(methodsPath); // TODO: cache
+                Object.assign(result, methods(this));
+            }
+
+            return result;
+        }, {});
     }
 
     _render(bundleName, bundleData) { // TODO
