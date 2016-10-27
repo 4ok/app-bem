@@ -56,6 +56,7 @@ module.exports = class extends Controller {
                     'data:catalog',
                     {
                         filter : {
+                            parent_id: null,
                             alias : this._param.route('category_alias')
                         },
                     }
@@ -70,6 +71,7 @@ module.exports = class extends Controller {
                         'data:catalog',
                         {
                             filter : {
+                                parent_id: null,
                                 alias : this._param.route('category_alias')
                             },
                         }
@@ -80,6 +82,9 @@ module.exports = class extends Controller {
                         'data:catalog',
                         {
                             filter : {
+                                parent_id: {
+                                    $exists : true,
+                                },
                                 alias : this._param.route('subcategory_alias')
                             },
                         }
