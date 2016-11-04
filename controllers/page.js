@@ -49,75 +49,85 @@ module.exports = class extends Controller {
                 }
                 break;
             }
-            case 'catalog-category' : {
-                result = this._setRequestParamByGateResult(
-                    'route.params.category_id', // TODO
-                    '_id',
-                    'data:catalog',
-                    {
-                        filter : {
-                            parent_id: null,
-                            alias : this._param.route('category_alias')
-                        },
+            case 'catalog-category' : { // TODO
+                const callMethod = this._gate.callMethod.bind(this._gate);
+
+                result = callMethod('data:catalog/list', { // TODO: list it is for get children
+                    filter : {
+                        parent_id: null,
+                        alias : this._param.route('category_alias')
+                    },
+                    limit : 1
+                })
+                .then(categories => {
+                    const category = categories[0];
+                    let result;
+
+                    this._request.setParam('route.params.category_id', category._id); // TODO: no route
+
+                    if (category.num.children > 1) {
+                        result = Promise.reject(); // TODO
+                    } else {
+                        result = callMethod('data:catalog', {
+                            filter : {
+                                parent_id: category._id,
+                            },
+                        });
                     }
-                );
+
+                    return result;
+                })
+                .then(subcategory => {
+                    this._request.setParam('route.params.subcategory_id', subcategory._id);
+                })
+                .catch(function () {
+                    console.info('In this category is more than one a subcategory'); // TODO
+                });
                 break;
             }
             case 'catalog-product' : {
-                const all = [
-                    this._setRequestParamByGateResult(
-                        'route.params.category_id', // TODO
-                        '_id',
-                        'data:catalog',
-                        {
-                            filter : {
-                                parent_id: null,
-                                alias : this._param.route('category_alias')
-                            },
-                        }
-                    ),
-                    this._setRequestParamByGateResult(
-                        'route.params.subcategory_id',
-                        '_id',
-                        'data:catalog',
-                        {
-                            filter : {
-                                parent_id: {
-                                    $exists : true,
-                                },
-                                alias : this._param.route('subcategory_alias')
-                            },
-                        }
-                    ),
-                ];
+                const callMethod = this._gate.callMethod.bind(this._gate);
 
-                if (this._param.route('product_alias')) {
-                    all.push(this._setRequestParamByGateResult(
-                        'route.params.product_id',
-                        '_id',
-                        'data:catalog',
-                        {
+                result = callMethod('data:catalog', {
+                    filter : {
+                        parent_id: null,
+                        alias : this._param.route('category_alias'),
+                    },
+                })
+                .then(category => {
+                    this._request.setParam('route.params.category_id', category._id); // TODO: no route
+
+                    return callMethod('data:catalog', {
+                        filter : {
+                            parent_id: category._id,
+                            alias : this._param.route('subcategory_alias'),
+                        },
+                    });
+                })
+                .then(subcategory => {
+                    this._request.setParam('route.params.subcategory_id', subcategory._id); // TODO: no route
+
+                    if (this._param.route('product_alias')) {
+                        return callMethod('data:catalog', {
                             filter : {
+                                parent_id : subcategory._id,
                                 alias : this._param.route('product_alias')
-                            },
-                        }
-                    ));
-                } else {
-                    all.push(this._setRequestParamByGateResult(
-                        'route.params.product_id',
-                        '_id',
-                        'data:catalog',
-                        {
+                            }
+                        });
+                    } else {
+                        return callMethod('data:catalog', {
                             filter : {
-                                '#parent' : {
-                                    alias : this._param.route('subcategory_alias'),
-                                },
+                                parent_id : subcategory._id,
                             },
-                        }
-                    ));
-                }
-
-                result = Promise.all(all);
+                            sort : {
+                                sort : 1
+                            }
+                        });
+                    }
+                })
+                .then(product => {
+                    this._request.setParam('route.params.product_id', product._id);
+                });
                 break;
             }
             default: {
