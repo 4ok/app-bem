@@ -46,6 +46,8 @@ module.exports = class extends Controller {
                             },
                         }
                     );
+                } else {
+                    result = Promise.resolve();
                 }
                 break;
             }
