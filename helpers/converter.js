@@ -54,6 +54,7 @@ module.exports = class extends Helper {
             const html = this.bemjsonToHtml(bemjson);
             let result = string.stripTags(html);
 
+            // TODO: think another decision
             // Add space after punctuation
             result = result.replace(/([а-яa-z0-9][\.,!:;])/gi, '$1 ');
 
