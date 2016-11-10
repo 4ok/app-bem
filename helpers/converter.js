@@ -55,7 +55,7 @@ module.exports = class extends Helper {
             let result = string.stripTags(html);
 
             // Add space after punctuation
-            result = result.replace(/[а-яa-z0-9]([\.,!:;])/gi, '$1 ');
+            result = result.replace(/([а-яa-z0-9][\.,!:;])/gi, '$1 ');
 
             string.clean(result);
 
