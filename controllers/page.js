@@ -5,6 +5,7 @@ const Bundle = require('../components/bundle');
 const Gate = require('app-gate');
 const HelperFactory = require('app-core/components/helper/factory');
 const Controller = require('app-core/components/controller');
+const BreakPromise = require('break-promise');
 
 const LOGGER_PROFILE_SEND_RESPONSE = 'Send response';
 
@@ -165,9 +166,34 @@ module.exports = class extends Controller {
     }
 
     _showPage() {
+        const methods = this._getPageGateMethods(); // todo: move to construct?
+        const mandatoriesMethodsAliases = Object
+            .keys(methods)
+            .reduce((result, key) => {
+                methods[key].isMandatory && result.push(key);
+
+                return result;
+            }, []);
+
         return this._getBundleData()
             .then(data => {
-                data = data || {};
+
+                Object
+                    .keys(data)
+                    .forEach(methodAlias => {
+                        const methodData = data[methodAlias];
+
+                        if (methodData === undefined
+                            && mandatoriesMethodsAliases.includes(methodAlias)
+                        ) {
+                            this._response.send404();
+
+                            throw new BreakPromise(
+                                `The mandatory method "${methodAlias}" returned "undefined". Response code 404.`,
+                                'warn'
+                            );
+                        }
+                    });
 
                 return this._render('index', { // TODO index
                     block : 'index',
@@ -192,7 +218,7 @@ module.exports = class extends Controller {
         const pageAlias = this._param.route('page_alias');
         const methodsPaths = [
             this._gateMethodsDir + '/' + pageAlias + '.js',
-            this._gateMethodsDir + '/common.js'
+            this._gateMethodsDir + '/common.js' // TODO: common rename
         ];
 
         return methodsPaths.reduce((result, methodsPath) => {
