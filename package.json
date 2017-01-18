@@ -16,10 +16,7 @@
   },
   "devDependencies": {
     "eslint": "^3.0.1",
-    "eslint-config-4ok": "4ok/eslint-config-4ok",
-    "eslint-config-airbnb": "^9.0.1",
-    "eslint-plugin-bem-xjst": "^1.0.2",
-    "eslint-plugin-import": "^1.10.2"
+    "eslint-config-4ok": "4ok/eslint-config-4ok"
   },
   "scripts": {
     "lint": "node_modules/.bin/eslint ."
