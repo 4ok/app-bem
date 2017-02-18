@@ -11,7 +11,7 @@ const LOGGER_PROFILE_SEND_RESPONSE = 'Send response';
 
 module.exports = class extends Controller {
 
-    constructor(http, gateMethodsDir) {
+    constructor(http) {
         super(http);
 
         this._helperFactory = new HelperFactory(http, [
@@ -19,7 +19,6 @@ module.exports = class extends Controller {
             'app-core/helpers',
         ]);
         this._gate = new Gate();
-        this._gateMethodsDir = gateMethodsDir;
     }
 
     indexAction() {
@@ -166,7 +165,7 @@ module.exports = class extends Controller {
     }
 
     _showPage() {
-        const methods = this._getPageGateMethods(); // todo: move to construct?
+        const methods = this._getGateMethods(); // todo: move to construct?
         const mandatoriesMethodsAliases = Object
             .keys(methods)
             .reduce((result, key) => {
@@ -207,29 +206,11 @@ module.exports = class extends Controller {
     }
 
     _getBundleData() {
-        const methods = this._getPageGateMethods();
+        const methods = this._getGateMethods();
 
         return methods
             ? this._gate.callMethod(methods)
             : Promise.resolve();
-    }
-
-    _getPageGateMethods() {
-        const pageAlias = this._param.route('pageAlias'); // todo
-        const methodsPaths = [
-            this._gateMethodsDir + '/' + pageAlias + '.js',
-            this._gateMethodsDir + '/common.js' // TODO: common rename
-        ];
-
-        return methodsPaths.reduce((result, methodsPath) => {
-
-            if (fs.existsSync(methodsPath)) {
-                const methods = require(methodsPath); // TODO: cache
-                Object.assign(result, methods(this));
-            }
-
-            return result;
-        }, {});
     }
 
     _render(bundleName, bundleData) { // TODO
