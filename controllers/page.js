@@ -215,7 +215,7 @@ module.exports = class extends Controller {
     }
 
     _getPageGateMethods() {
-        const pageAlias = this._param.route('page_alias');
+        const pageAlias = this._param.route('pageAlias'); // todo
         const methodsPaths = [
             this._gateMethodsDir + '/' + pageAlias + '.js',
             this._gateMethodsDir + '/common.js' // TODO: common rename
