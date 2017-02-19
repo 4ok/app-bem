@@ -14,6 +14,8 @@ module.exports = class extends Controller {
     constructor(http) {
         super(http);
 
+        logger.profile(LOGGER_PROFILE_SEND_RESPONSE);
+
         this._helperFactory = new HelperFactory(http, [
             __dirname + '/../helpers',
             'app-core/helpers',
@@ -22,125 +24,128 @@ module.exports = class extends Controller {
     }
 
     indexAction() {
-        logger.profile(LOGGER_PROFILE_SEND_RESPONSE);
+        this._logRequestParams();
 
-        const routeName = this._request.getParam('route').name;
-        let result;
-
-        // TODO
-        switch (routeName) {
-            case 'article' : {
-                const articleAliasChain = this._param.route('article_alias_chain');
-
-                // TODO: delete if
-                if (articleAliasChain) {
-                    result = this._setRequestParamByGateResult(
-                        'route.params.article_id',
-                        '_id',
-                        'data:article',
-                        {
-                            filter : {
-                                alias : {
-                                    '#chain' : articleAliasChain,
-                                },
-                            },
-                        }
-                    );
-                } else {
-                    result = Promise.resolve();
-                }
-                break;
-            }
-            case 'catalog-category' : { // TODO
-                const callMethod = this._gate.callMethod.bind(this._gate);
-
-                result = callMethod('data:catalog/list', { // TODO: list it is for get children
-                    filter : {
-                        parent_id: null,
-                        alias : this._param.route('category_alias')
-                    },
-                    limit : 1
-                })
-                .then(categories => {
-                    const category = categories[0];
-                    let result;
-
-                    this._request.setParam('route.params.category_id', category._id); // TODO: no route
-
-                    if (category.num.children > 1) {
-                        result = Promise.reject(); // TODO
-                    } else {
-                        result = callMethod('data:catalog', {
-                            filter : {
-                                parent_id: category._id,
-                            },
-                        });
-                    }
-
-                    return result;
-                })
-                .then(subcategory => {
-                    this._request.setParam('route.params.subcategory_id', subcategory._id);
-                })
-                .catch(function () {
-                    console.info('In this category is more than one a subcategory'); // TODO
-                });
-                break;
-            }
-            case 'catalog-product' : {
-                const callMethod = this._gate.callMethod.bind(this._gate);
-
-                result = callMethod('data:catalog', {
-                    filter : {
-                        parent_id: null,
-                        alias : this._param.route('category_alias'),
-                    },
-                })
-                .then(category => {
-                    this._request.setParam('route.params.category_id', category._id); // TODO: no route
-
-                    return callMethod('data:catalog', {
-                        filter : {
-                            parent_id: category._id,
-                            alias : this._param.route('subcategory_alias'),
-                        },
-                    });
-                })
-                .then(subcategory => {
-                    this._request.setParam('route.params.subcategory_id', subcategory._id); // TODO: no route
-
-                    if (this._param.route('product_alias')) {
-                        return callMethod('data:catalog', {
-                            filter : {
-                                parent_id : subcategory._id,
-                                alias : this._param.route('product_alias')
-                            }
-                        });
-                    } else {
-                        return callMethod('data:catalog', {
-                            filter : {
-                                parent_id : subcategory._id,
-                            },
-                            sort : {
-                                sort : 1
-                            }
-                        });
-                    }
-                })
-                .then(product => {
-                    this._request.setParam('route.params.product_id', product._id);
-                });
-                break;
-            }
-            default: {
-                result = Promise.resolve();
-            }
-        }
-
-        result
-            .then(this._logRequestParams.bind(this))
-            .then(this._showPage.bind(this))
+        return this
+            ._showPage()
             .catch(this._onError.bind(this));
+
+        // const routeName = this._request.getParam('route').name;
+        // let result;
+        // TODO
+        // switch (routeName) {
+        //     case 'article' : {
+        //         const articleAliasChain = this._param.route('article_alias_chain');
+        //
+        //         // TODO: delete if
+        //         if (articleAliasChain) {
+        //             result = this._setRequestParamByGateResult(
+        //                 'route.params.article_id',
+        //                 '_id',
+        //                 'data:article',
+        //                 {
+        //                     filter : {
+        //                         alias : {
+        //                             '#chain' : articleAliasChain,
+        //                         },
+        //                     },
+        //                 }
+        //             );
+        //         } else {
+        //             result = Promise.resolve();
+        //         }
+        //         break;
+        //     }
+        //     case 'catalog-category' : { // TODO
+        //         const callMethod = this._gate.callMethod.bind(this._gate);
+        //
+        //         result = callMethod('data:catalog/list', { // TODO: list it is for get children
+        //             filter : {
+        //                 parent_id: null,
+        //                 alias : this._param.route('category_alias')
+        //             },
+        //             limit : 1
+        //         })
+        //         .then(categories => {
+        //             const category = categories[0];
+        //             let result;
+        //
+        //             this._request.setParam('route.params.category_id', category._id); // TODO: no route
+        //
+        //             if (category.num.children > 1) {
+        //                 result = Promise.reject(); // TODO
+        //             } else {
+        //                 result = callMethod('data:catalog', {
+        //                     filter : {
+        //                         parent_id: category._id,
+        //                     },
+        //                 });
+        //             }
+        //
+        //             return result;
+        //         })
+        //         .then(subcategory => {
+        //             this._request.setParam('route.params.subcategory_id', subcategory._id);
+        //         })
+        //         .catch(function () {
+        //             console.info('In this category is more than one a subcategory'); // TODO
+        //         });
+        //         break;
+        //     }
+        //     case 'catalog-product' : {
+        //         const callMethod = this._gate.callMethod.bind(this._gate);
+        //
+        //         result = callMethod('data:catalog', {
+        //             filter : {
+        //                 parent_id: null,
+        //                 alias : this._param.route('category_alias'),
+        //             },
+        //         })
+        //         .then(category => {
+        //             this._request.setParam('route.params.category_id', category._id); // TODO: no route
+        //
+        //             return callMethod('data:catalog', {
+        //                 filter : {
+        //                     parent_id: category._id,
+        //                     alias : this._param.route('subcategory_alias'),
+        //                 },
+        //             });
+        //         })
+        //         .then(subcategory => {
+        //             this._request.setParam('route.params.subcategory_id', subcategory._id); // TODO: no route
+        //
+        //             if (this._param.route('product_alias')) {
+        //                 return callMethod('data:catalog', {
+        //                     filter : {
+        //                         parent_id : subcategory._id,
+        //                         alias : this._param.route('product_alias')
+        //                     }
+        //                 });
+        //             } else {
+        //                 return callMethod('data:catalog', {
+        //                     filter : {
+        //                         parent_id : subcategory._id,
+        //                     },
+        //                     sort : {
+        //                         sort : 1
+        //                     }
+        //                 });
+        //             }
+        //         })
+        //         .then(product => {
+        //             this._request.setParam('route.params.product_id', product._id);
+        //         });
+        //         break;
+        //     }
+        //     default: {
+        //         result = Promise.resolve();
+        //     }
+        // }
+
+        // result
+        //     .then(this._logRequestParams.bind(this))
+        //     .then(this._showPage.bind(this))
+        //     .catch(this._onError.bind(this));
     }
 
     _logRequestParams() {
