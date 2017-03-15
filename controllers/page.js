@@ -16,11 +16,15 @@ module.exports = class extends Controller {
 
         logger.profile(LOGGER_PROFILE_SEND_RESPONSE);
 
-        this._helperFactory = new HelperFactory(http, [
-            __dirname + '/../helpers',
-            'app-core/helpers',
-        ]);
         this._gate = new Gate();
+    }
+
+    _getHelpersDirs() {
+        return [];
+    }
+
+    _getGateMethods() {
+        return {};
     }
 
     indexAction() {
@@ -82,10 +86,13 @@ module.exports = class extends Controller {
                         }
                     });
 
+                const helpersDirs = this._getHelpersDirs();
+                const helperFactory = new HelperFactory(helpersDirs, this._http, data);
+
                 return this._render('index', { // TODO index
                     block : 'index',
                     bemtree : {
-                        helper : this._helperFactory.getHelper.bind(this._helperFactory),
+                        helper : helperFactory.getHelper.bind(helperFactory),
                         data,
                     },
                     context : this._param.route('context'),
