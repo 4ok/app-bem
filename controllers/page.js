@@ -19,6 +19,10 @@ module.exports = class extends Controller {
         this._gate = new Gate();
     }
 
+    _getProjectDirs() {
+        return null;
+    }
+
     _getHelpersDirs() {
         return [];
     }
@@ -87,7 +91,8 @@ module.exports = class extends Controller {
                     });
 
                 const helpersDirs = this._getHelpersDirs();
-                const helperFactory = new HelperFactory(helpersDirs, this._http, data);
+                const projectDir = this._getProjectDirs();
+                const helperFactory = new HelperFactory(projectDir, helpersDirs, this._http, data);
 
                 return this._render('index', { // TODO index
                     block : 'index',

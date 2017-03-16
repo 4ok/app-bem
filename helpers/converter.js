@@ -84,7 +84,7 @@ module.exports = class extends Helper {
         });
     }
 
-    _cache(name, args, fn) {
+    _cache(name, args, fn) { // todo
         const hash = this._getMethodHash(name, args);
 
         if (!METHODS_CACHE[hash]) {

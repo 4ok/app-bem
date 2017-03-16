@@ -1,14 +1,30 @@
-const borschik = require('borschik/js/borschik'); // todo add to package.json
+const Helper = require('app-core/components/helper/abstract');
+const fs = require('fs');
+const borschik = require('borschik/js/borschik');
 
-module.exports = class {
+const PROJECT_LINKS_FILE = 'bem/links.json';
 
-    constructor() {
+module.exports = class extends Helper {
 
+    constructor(...args) {
+        super(...args);
+        const linksFile = this._projectDir + '/' + PROJECT_LINKS_FILE;
+
+        if (fs.existsSync(linksFile)) {
+            this.addLinks(linksFile);
+        }
     }
 
-    get() {
-        // const links = require('../../links.json');
-        console.log('!!!!!!!!!!!!!!!!!!', __dirname)
+    get _return() {
         return borschik;
+    }
+
+    addLinks(links) {
+
+        if (typeof links === 'string') {
+            links = require(links);
+        }
+
+        borschik.addLinks(links);
     }
 };
