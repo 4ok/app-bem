@@ -8,6 +8,7 @@
   "dependencies": {
     "app-core": "4ok/app-core",
     "app-gate": "4ok/app-gate",
+    "borschik": "^1.6.1",
     "config": "^1.20.1",
     "logger": "4ok/logger",
     "markdown-bemjson": "^3.0.2",
