@@ -82,11 +82,11 @@ module.exports = class extends Controller {
                             && mandatoriesMethodsAliases.includes(methodAlias)
                         ) {
                             this._response.send404();
+                            const message = 'The mandatory method "'
+                                + methodAlias
+                                + '" returned "undefined". Response code 404.';
 
-                            throw new BreakPromise(
-                                `The mandatory method "${methodAlias}" returned "undefined". Response code 404.`,
-                                'warn'
-                            );
+                            throw new BreakPromise(message, 'warn');
                         }
                     });
 
@@ -98,7 +98,7 @@ module.exports = class extends Controller {
                     block : 'index',
                     bemtree : {
                         helper : helperFactory.getHelper.bind(helperFactory),
-                        data,
+                        store : data,
                     },
                     context : this._param.route('context'),
                 })
