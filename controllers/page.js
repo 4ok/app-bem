@@ -32,17 +32,15 @@ module.exports = class extends Controller {
 
     _logRequestParams() {
         const request = this._request;
-        const routeParamsWithoutObjectId = JSON.parse(
-            JSON.stringify(request.getParam('route.params'))
-        );
+        const getParam = request.getParam.bind(request);
 
         logger
             .break()
             .info('Request uri: %s', request.url.path)
-            .info('Route name:', request.getParam('route.name'))
-            .info('Route params:', routeParamsWithoutObjectId)
-            .info('Query params:', request.getParam('query') || '')
-            .info('Post params:', request.getParam('body') || '');
+            .info('Route name:', getParam('route.name'))
+            .info('Route params:', JSON.stringify(getParam('route.params')))
+            .info('Query params:', JSON.stringify(getParam('query') || {}))
+            .info('Post params:', JSON.stringify(getParam('body') || {}));
     }
 
     _setRequestParamByGateResult(requestKey, resultKey, methodName, methodParams) {
