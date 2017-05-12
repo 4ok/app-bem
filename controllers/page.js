@@ -11,24 +11,15 @@ const LOGGER_PROFILE_SEND_RESPONSE = 'Send response';
 
 module.exports = class extends Controller {
 
-    constructor(http) {
+    constructor({ http, projectDir, helpersDirs, methods }) {
         super(http);
 
         logger.profile(LOGGER_PROFILE_SEND_RESPONSE);
 
+        this._projectDir = projectDir;
+        this._helpersDirs = helpersDirs;
+        this._pageMethods = this._getPageMethods();
         this._gate = new Gate();
-    }
-
-    _getProjectDirs() {
-        return null;
-    }
-
-    _getHelpersDirs() {
-        return [];
-    }
-
-    _getGateMethods() {
-        return {};
     }
 
     indexAction() {
@@ -61,7 +52,7 @@ module.exports = class extends Controller {
     }
 
     _showPage() {
-        const methods = this._getGateMethods(); // todo: move to construct?
+        const methods = this._pageMethods;
         const mandatoriesMethodsAliases = Object
             .keys(methods)
             .reduce((result, key) => {
@@ -90,9 +81,12 @@ module.exports = class extends Controller {
                         }
                     });
 
-                const helpersDirs = this._getHelpersDirs();
-                const projectDir = this._getProjectDirs();
-                const helperFactory = new HelperFactory(projectDir, helpersDirs, this._http, data);
+                const helperFactory = new HelperFactory( // todo: spread
+                    this._projectDir,
+                    this._helpersDirs,
+                    this._http,
+                    data
+                );
 
                 return this._render('index', { // TODO index
                     block : 'index',
@@ -106,10 +100,8 @@ module.exports = class extends Controller {
     }
 
     _getBundleData() {
-        const methods = this._getGateMethods();
-
-        return methods
-            ? this._gate.callMethod(methods)
+        return this._pageMethods
+            ? this._gate.callMethods(this._pageMethods)
             : Promise.resolve();
     }
 
