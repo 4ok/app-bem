@@ -65,7 +65,7 @@ module.exports = class {
     getBemtree() {
 
         if (!this._bemtree) {
-            // eslint-disable-next-line global-require
+            // eslint-disable-next-line import/no-dynamic-require
             this._bemtree = require(this._bemtreePath).BEMTREE;
         }
 
@@ -76,7 +76,7 @@ module.exports = class {
     getBemhtml() {
 
         if (!this._bemhtml) {
-            // eslint-disable-next-line global-require
+            // eslint-disable-next-line import/no-dynamic-require
             this._bemhtml = require(this._bemhtmlPath).BEMHTML;
         }
 

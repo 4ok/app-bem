@@ -1,10 +1,11 @@
-const Helper = require('app-core/components/helper/abstract');
 const string = require('underscore.string');
 const crypto = require('crypto');
+const Helper = require('app-core/components/helper/abstract');
+const MarkdownBemjson = require('markdown-bemjson');
 
 // TODO
-const bundleDir = '../../../bem/bundles/index';
-const bemhtml = require(bundleDir + '/index.bemhtml.min.js').BEMHTML;
+// eslint-disable-next-line import/no-unresolved
+const bemhtml = require('../../../bem/bundles/index/index.bemhtml.min.js').BEMHTML;
 
 const METHODS_CACHE = {};
 
@@ -33,7 +34,6 @@ const rules = {
     },
 };
 
-const MarkdownBemjson = require('markdown-bemjson');
 const markdownBemjson = new MarkdownBemjson({
     rules,
     wrapper: false,
@@ -56,7 +56,7 @@ module.exports = class extends Helper {
 
             // TODO: think another decision
             // Add space after punctuation
-            result = result.replace(/([а-яa-z0-9][\.,!:;])/gi, '$1 ');
+            result = result.replace(/([а-яa-z0-9][.,!:;])/gi, '$1 ');
 
             string.clean(result);
 

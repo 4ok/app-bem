@@ -1,4 +1,3 @@
-const fs = require('fs');
 const logger = require('logger')();
 const config = require('config');
 const Bundle = require('../components/bundle');
@@ -11,7 +10,7 @@ const LOGGER_PROFILE_SEND_RESPONSE = 'Send response';
 
 module.exports = class extends Controller {
 
-    constructor({ http, projectDir, helpersDirs, methods }) {
+    constructor({ http, projectDir, helpersDirs }) {
         super(http);
 
         logger.profile(LOGGER_PROFILE_SEND_RESPONSE);

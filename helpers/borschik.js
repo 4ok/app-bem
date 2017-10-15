@@ -22,6 +22,7 @@ module.exports = class extends Helper {
     addLinks(links) {
 
         if (typeof links === 'string') {
+            // eslint-disable-next-line import/no-dynamic-require
             links = require(links);
         }
 
