@@ -15,7 +15,7 @@ module.exports = class extends Helper {
         }
     }
 
-    get _return() {
+    get return() {
         return borschik;
     }
 
