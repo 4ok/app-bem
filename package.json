@@ -11,7 +11,7 @@
     "borschik": "^2.0.0",
     "break-promise": "github:4ok/break-promise.git",
     "config": "^1.26.2",
-    "logger": "4ok/logger",
+    "logger": "github:4ok/logger",
     "markdown-bemjson": "^3.0.2",
     "underscore.string": "^3.3.4"
   },
