@@ -19,13 +19,13 @@ const rules = {
             result = JSON.parse(code);
         } else {
             result = {
-                elem : 'code',
-                content : code,
+                elem: 'code',
+                content: code,
             };
 
             if (lang) {
                 result.mods = {
-                    lang : 'lang',
+                    lang: 'lang',
                 };
             }
         }
@@ -42,14 +42,12 @@ const markdownBemjson = new MarkdownBemjson({
 module.exports = class extends Helper {
 
     bemjsonToHtml(bemjson) {
-        return this._cache(
-            'bemjsonToHtml',
-            arguments,
-            () => bemhtml.apply(bemjson)
-        );
+        // eslint-disable-next-line prefer-rest-params
+        return this._cache('bemjsonToHtml', arguments, () => bemhtml.apply(bemjson));
     }
 
     bemjsonToText(bemjson, length, pruneString) {
+        // eslint-disable-next-line prefer-rest-params
         return this._cache('bemjsonToText', arguments, () => {
             const html = this.bemjsonToHtml(bemjson);
             let result = string.stripTags(html);
@@ -69,14 +67,12 @@ module.exports = class extends Helper {
     }
 
     markdownToBemjson(markdown) {
-        return this._cache(
-            'markdownToBemjson',
-            arguments,
-            () => markdownBemjson.convert(markdown)
-        );
+        // eslint-disable-next-line prefer-rest-params
+        return this._cache('markdownToBemjson', arguments, () => markdownBemjson.convert(markdown));
     }
 
     markdownToText(markdown, length) {
+        // eslint-disable-next-line prefer-rest-params
         return this._cache('markdownToText', arguments, () => {
             const bemjson = this.markdownToBemjson(markdown);
 
@@ -85,7 +81,7 @@ module.exports = class extends Helper {
     }
 
     _cache(name, args, fn) { // todo
-        const hash = this._getMethodHash(name, args);
+        const hash = this.constructor.getMethodHash(name, args);
 
         if (!METHODS_CACHE[hash]) {
             METHODS_CACHE[hash] = fn();
@@ -94,7 +90,7 @@ module.exports = class extends Helper {
         return METHODS_CACHE[hash];
     }
 
-    _getMethodHash(methodName, methodArgs) {
+    static getMethodHash(methodName, methodArgs) {
         const argsArr = [].slice.call(methodArgs);
         const params = [methodName].concat(argsArr);
         const paramsStr = JSON.stringify(params);

@@ -53,17 +53,19 @@ module.exports = class extends Controller {
         const mandatoriesMethodsAliases = Object
             .keys(methods)
             .reduce((result, key) => {
-                methods[key].isMandatory && result.push(key);
+
+                if (methods[key].isMandatory) {
+                    result.push(key);
+                }
 
                 return result;
             }, []);
 
         return this._getBundleData()
-            .then(data => {
-
+            .then((data) => {
                 Object
                     .keys(data)
-                    .forEach(methodAlias => {
+                    .forEach((methodAlias) => {
                         const methodData = data[methodAlias];
 
                         if (methodData === undefined
@@ -78,21 +80,24 @@ module.exports = class extends Controller {
                         }
                     });
 
-                const helperFactory = new HelperFactory( // todo: spread
+                // todo: spread
+                /* eslint-disable comma-dangle */
+                const helperFactory = new HelperFactory(
                     this._projectDir,
                     this._helpersDirs,
                     this._http,
                     data
                 );
+                /* eslint-disable comma-dangle */
 
                 return this._render('index', { // TODO index
-                    block : 'index',
-                    bemtree : {
-                        helper : helperFactory.getHelper.bind(helperFactory),
-                        store : data,
+                    block: 'index',
+                    bemtree: {
+                        helper: helperFactory.getHelper.bind(helperFactory),
+                        store: data,
                     },
-                    context : this._param.route('context'),
-                })
+                    context: this._param.route('context'),
+                });
             });
     }
 
@@ -104,8 +109,8 @@ module.exports = class extends Controller {
 
     _render(bundleName, bundleData) { // TODO
         const bundle = new Bundle({
-            root : config.rootPath + '/bem', // TODO
-            bundle : bundleName,
+            root: config.rootPath + '/bem', // TODO
+            bundle: bundleName,
         });
         const output = this._param.query('__output', 'html');
         const content = bundle.render(bundleData, output);
@@ -118,7 +123,7 @@ module.exports = class extends Controller {
 
         this._response
             .setHeader({
-                'Content-Type' : 'text/html; charset=utf-8',
+                'Content-Type': 'text/html; charset=utf-8',
             })
             .send(content);
     }

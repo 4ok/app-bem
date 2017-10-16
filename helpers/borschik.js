@@ -15,14 +15,14 @@ module.exports = class extends Helper {
         }
     }
 
-    get return() {
+    static get return() {
         return borschik;
     }
 
-    addLinks(links) {
+    static addLinks(links) {
 
         if (typeof links === 'string') {
-            // eslint-disable-next-line import/no-dynamic-require
+            // eslint-disable-next-line global-require, import/no-dynamic-require
             links = require(links);
         }
 

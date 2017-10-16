@@ -42,7 +42,7 @@ module.exports = class {
         let content;
 
         switch (output) {
-            case 'bemjson' : {
+            case 'bemjson': {
                 content = [
                     '<pre>',
                     JSON.stringify(bemjson, null, 4),
@@ -65,7 +65,7 @@ module.exports = class {
     getBemtree() {
 
         if (!this._bemtree) {
-            // eslint-disable-next-line import/no-dynamic-require
+            // eslint-disable-next-line global-require, import/no-dynamic-require
             this._bemtree = require(this._bemtreePath).BEMTREE;
         }
 
@@ -76,7 +76,7 @@ module.exports = class {
     getBemhtml() {
 
         if (!this._bemhtml) {
-            // eslint-disable-next-line import/no-dynamic-require
+            // eslint-disable-next-line global-require, import/no-dynamic-require
             this._bemhtml = require(this._bemhtmlPath).BEMHTML;
         }
 
