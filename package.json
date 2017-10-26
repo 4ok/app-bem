@@ -9,7 +9,7 @@
     "app-core": "4ok/app-core",
     "app-gate": "4ok/app-gate",
     "borschik": "^2.0.0",
-    "break-promise": "github:4ok/break-promise.git",
+    "break-promise": "github:4ok/break-promise",
     "logger": "github:4ok/logger",
     "markdown-bemjson": "^3.0.2",
     "underscore.string": "^3.3.4"
