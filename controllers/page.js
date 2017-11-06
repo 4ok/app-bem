@@ -1,5 +1,5 @@
+const path = require('path');
 const logger = require('logger')();
-const config = require('config');
 const Bundle = require('../components/bundle');
 const Gate = require('app-gate');
 const HelperFactory = require('app-core/components/helper/factory');
@@ -8,15 +8,30 @@ const BreakPromise = require('break-promise');
 
 const LOGGER_PROFILE_SEND_RESPONSE = 'Send response';
 
+const DEFAULT_BEM_DIRECTORY = 'bem';
+const DEFAULT_BUNDLE_NAME = 'index';
+const DEFAULT_ENTRY_BLOCK = 'index';
+
 module.exports = class extends Controller {
 
-    constructor({ http, projectDir, helpersDirs }) {
+    constructor({
+        http,
+        projectDir,
+        helpersDirs,
+        bemDir,
+        bundleName,
+        entryBlock,
+    }) {
         super(http);
 
         logger.profile(LOGGER_PROFILE_SEND_RESPONSE);
 
         this._projectDir = projectDir;
+        this._bemDir = bemDir || path.join(this._projectDir, DEFAULT_BEM_DIRECTORY);
         this._helpersDirs = helpersDirs;
+        this._bundleName = bundleName || DEFAULT_BUNDLE_NAME;
+        this._entryBlock = entryBlock || DEFAULT_ENTRY_BLOCK;
+
         this._pageMethods = this._getPageMethods();
         this._gate = new Gate();
     }
@@ -90,8 +105,8 @@ module.exports = class extends Controller {
                 );
                 /* eslint-disable comma-dangle */
 
-                return this._render('index', { // TODO index
-                    block: 'index',
+                return this._render({
+                    block: this._entryBlock,
                     bemtree: {
                         helper: helperFactory.getHelper.bind(helperFactory),
                         store: data,
@@ -107,10 +122,10 @@ module.exports = class extends Controller {
             : Promise.resolve();
     }
 
-    _render(bundleName, bundleData) { // TODO
+    _render(bundleData) {
         const bundle = new Bundle({
-            root: config.rootPath + '/bem', // TODO
-            bundle: bundleName,
+            root: this._bemDir,
+            bundle: this._bundleName,
         });
         const output = this._param.query('__output', 'html');
         const content = bundle.render(bundleData, output);
