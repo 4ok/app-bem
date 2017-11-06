@@ -50,7 +50,7 @@ module.exports = class extends Controller {
 
         logger
             .break()
-            .info('Request uri: %s', request.url.path)
+            .info('Request uri: %s', request.parsedUrl.path)
             .info('Route name:', getParam('route.name'))
             .info('Route params:', JSON.stringify(getParam('route.params')))
             .info('Query params:', JSON.stringify(getParam('query') || {}))
