@@ -37,6 +37,7 @@ const rules = {
 const markdownBemjson = new MarkdownBemjson({
     rules,
     wrapper: false,
+    isEscapeHtml: false
 });
 
 module.exports = class extends Helper {
